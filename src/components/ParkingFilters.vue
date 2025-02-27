@@ -8,6 +8,12 @@ const { filters, sortedParkings } = storeToRefs(parkingStore);
 
 const availabilityFilter = ref(filters.value.availability);
 const maxDistanceFilter = ref(filters.value.maxDistance);
+const showFilters = ref(false); // Filtres cachés par défaut
+
+// Fonction pour afficher/masquer les filtres
+function toggleFilters() {
+  showFilters.value = !showFilters.value;
+}
 
 // Appliquer les filtres après un court délai pour éviter trop d'appels lors des ajustements slider
 let applyTimeout: NodeJS.Timeout | null = null;
@@ -43,59 +49,74 @@ watch(() => filters.value.userLocation, (newValue) => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-    <h2 class="text-lg font-semibold text-gray-800 mb-3">Filtres</h2>
-    
-    <div class="space-y-4">
-      <!-- Filtre de disponibilité -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Disponibilité minimum: {{ availabilityFilter }}%
-        </label>
-        <input 
-          type="range" 
-          min="0" 
-          max="100" 
-          step="5"
-          v-model.number="availabilityFilter"
-          class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-        />
-        <div class="flex justify-between text-xs text-gray-500">
-          <span>0%</span>
-          <span>100%</span>
-        </div>
-      </div>
+  <div class="mb-4">
+    <div class="flex items-center justify-between mb-2">
+      <button 
+        @click="toggleFilters" 
+        class="flex items-center text-sm font-medium" 
+        style="color: var(--metro-blue);"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+        </svg>
+        {{ showFilters ? 'Masquer les filtres' : 'Afficher les filtres' }}
+      </button>
       
-      <!-- Filtre de distance (affiché seulement si la position utilisateur est disponible) -->
-      <div v-if="showDistanceFilter">
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Distance maximum: {{ maxDistanceFilter ? `${maxDistanceFilter/1000} km` : 'Illimitée' }}
-        </label>
-        <input 
-          type="range" 
-          min="0" 
-          max="5000" 
-          step="500"
-          v-model.number="maxDistanceFilter"
-          class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-        />
-        <div class="flex justify-between text-xs text-gray-500">
-          <span>Illimitée</span>
-          <span>5 km</span>
-        </div>
-      </div>
+      <p class="text-sm text-gray-600">{{ sortedParkings.length }} parkings trouvés</p>
     </div>
     
-    <!-- Affichage des résultats -->
-    <div class="mt-4 pt-3 border-t border-gray-200">
-      <div class="flex justify-between items-center">
-        <p class="text-sm text-gray-600">{{ sortedParkings.length }} parkings trouvés</p>
-        <button 
-          @click="resetFilters"
-          class="text-sm text-blue-600 hover:text-blue-800"
-        >
-          Réinitialiser
-        </button>
+    <div v-if="showFilters" class="bg-white rounded-lg shadow-sm p-3 transition-all duration-300 ease-in-out">
+      <div class="space-y-3">
+        <!-- Filtre de disponibilité -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Disponibilité minimum: {{ availabilityFilter }}%
+          </label>
+          <input 
+            type="range" 
+            min="0" 
+            max="100" 
+            step="5"
+            v-model.number="availabilityFilter"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            style="accent-color: var(--metro-blue);"
+          />
+          <div class="flex justify-between text-xs text-gray-500">
+            <span>0%</span>
+            <span>100%</span>
+          </div>
+        </div>
+        
+        <!-- Filtre de distance (affiché seulement si la position utilisateur est disponible) -->
+        <div v-if="showDistanceFilter">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Distance maximum: {{ maxDistanceFilter ? `${maxDistanceFilter/1000} km` : 'Illimitée' }}
+          </label>
+          <input 
+            type="range" 
+            min="0" 
+            max="5000" 
+            step="500"
+            v-model.number="maxDistanceFilter"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            style="accent-color: var(--metro-blue);"
+          />
+          <div class="flex justify-between text-xs text-gray-500">
+            <span>Illimitée</span>
+            <span>5 km</span>
+          </div>
+        </div>
+        
+        <!-- Bouton de réinitialisation -->
+        <div class="flex justify-end">
+          <button 
+            @click="resetFilters"
+            class="text-sm px-3 py-1 rounded-md"
+            style="color: var(--metro-blue);"
+          >
+            Réinitialiser
+          </button>
+        </div>
       </div>
     </div>
   </div>

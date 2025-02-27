@@ -1,4 +1,5 @@
 @import './base.css';
+@import './variables.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,9 +12,10 @@ html, body {
 }
 
 body {
-  font-family: 'Inter', 'Helvetica', 'Arial', sans-serif;
-  color: #333;
+  font-family: var(--font-family);
+  color: var(--text-color);
   line-height: 1.6;
+  background-color: var(--background-color);
 }
 
 #app {
@@ -26,23 +28,23 @@ body {
 
 /* Classes personnalisées pour les statuts des parkings */
 .status-available {
-  background-color: #10B981; /* green-500 */
+  background-color: var(--status-available-color); /* green-500 */
 }
 
 .status-limited {
-  background-color: #F59E0B; /* orange-500 */
+  background-color: var(--status-limited-color); /* orange-500 */
 }
 
 .status-full {
-  background-color: #EF4444; /* red-500 */
+  background-color: var(--status-full-color); /* red-500 */
 }
 
 .status-closed {
-  background-color: #6B7280; /* gray-500 */
+  background-color: var(--status-closed-color); /* gray-500 */
 }
 
 .status-unknown {
-  background-color: #D1D5DB; /* gray-300 */
+  background-color: var(--status-unknown-color); /* gray-300 */
 }
 
 /* Classes pour les animations */

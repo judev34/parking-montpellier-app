@@ -43,7 +43,7 @@ const parkingStore = useParkingStore();
 const { sortedParkings, loading, error, lastUpdated } = storeToRefs(parkingStore);
 
 // État local
-const view = ref<'map' | 'list'>('map');
+const view = ref<'map' | 'list'>('list'); // Changer la vue par défaut à 'list'
 
 // Charger les données et commencer le rafraîchissement automatique
 onMounted(() => {
@@ -79,7 +79,7 @@ const refreshData = async () => {
 <template>
   <main class="container mx-auto px-4 py-8">
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 mb-2">Parkings de Montpellier</h1>
+      <h1 class="text-2xl font-bold mb-2" style="color: var(--metro-blue);">Parkings de Montpellier</h1>
       <p class="text-gray-600">
         Consultez en temps réel la disponibilité des places dans les parkings de Montpellier.
       </p>
@@ -94,14 +94,16 @@ const refreshData = async () => {
         <button 
           @click="view = 'map'" 
           class="px-4 py-2 rounded-lg transition-colors" 
-          :class="view === 'map' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+          :class="view === 'map' ? 'text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+          :style="view === 'map' ? 'background-color: var(--metro-blue);' : ''"
         >
           Carte
         </button>
         <button 
           @click="view = 'list'" 
           class="px-4 py-2 rounded-lg transition-colors" 
-          :class="view === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+          :class="view === 'list' ? 'text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+          :style="view === 'list' ? 'background-color: var(--metro-blue);' : ''"
         >
           Liste
         </button>
@@ -110,8 +112,9 @@ const refreshData = async () => {
       <div class="flex items-center">
         <button 
           @click="refreshData" 
-          class="flex items-center text-sm text-blue-600 hover:text-blue-800"
+          class="flex items-center text-sm hover:text-opacity-80"
           :disabled="loading"
+          style="color: var(--metro-blue);"
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 

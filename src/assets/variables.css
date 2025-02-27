@@ -1,0 +1,45 @@
+:root {
+  /* Couleurs de la Métropole de Montpellier */
+  --metro-blue: #00b0f0; /* Bleu principal */
+  --metro-dark-blue: #0077c0; /* Bleu foncé */
+  --metro-light-blue: #7fd5f7; /* Bleu clair */
+  --metro-red: #e30613; /* Rouge */
+  --metro-orange: #f39200; /* Orange */
+  --metro-green: #95c11f; /* Vert */
+  --metro-dark-green: #009036; /* Vert foncé */
+  --metro-purple: #662483; /* Violet */
+  --metro-gray: #575756; /* Gris */
+  --metro-light-gray: #f2f2f2; /* Gris clair */
+  
+  /* Variables fonctionnelles */
+  --primary-color: var(--metro-blue);
+  --secondary-color: var(--metro-dark-blue);
+  --accent-color: var(--metro-orange);
+  --success-color: var(--metro-green);
+  --warning-color: var(--metro-orange);
+  --error-color: var(--metro-red);
+  --text-color: var(--metro-gray);
+  --background-color: var(--metro-light-gray);
+  
+  /* Statuts des parkings */
+  --status-available-color: var(--metro-green);
+  --status-limited-color: var(--metro-orange);
+  --status-full-color: var(--metro-red);
+  --status-closed-color: var(--metro-gray);
+  --status-unknown-color: #D1D5DB;
+  
+  /* Espacement */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Typographie */
+  --font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+}

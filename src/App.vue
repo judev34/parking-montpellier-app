@@ -4,18 +4,16 @@ import AppFooter from '@/components/AppFooter.vue';
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex flex-col">
-    <nav class="bg-blue-600 text-white shadow-md">
-      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
-          </svg>
-          <h1 class="text-xl font-bold">Parkings Montpellier</h1>
+  <div class="min-h-screen flex flex-col">
+    <nav class="bg-white text-gray-800 shadow-md">
+      <div class="container mx-auto px-2 flex justify-between items-center">
+        <div class="flex items-center">
+          <img src="/logos/metro_largeur_RVB.jpg" alt="Logo Montpellier Méditerranée Métropole" class="h-14 mr-4">
+          <h1 class="text-xl font-bold" style="color: var(--metro-blue);">Parkings</h1>
         </div>
-        <div class="text-sm">
-          <span>Données fournies par Montpellier Méditerranée Métropole</span>
+        <div class="flex">
+          <router-link to="/" class="hover:text-metro-blue">Accueil</router-link>
+          <router-link to="/about" class="hover:text-metro-blue">À propos</router-link>
         </div>
       </div>
     </nav>
@@ -34,16 +32,10 @@ nav {
   max-height: 100vh;
 }
 
-nav svg {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
 nav .container {
   width: 100%;
   font-size: 12px;
   text-align: center;
-  margin-top: 2rem;
 }
 
 nav a.router-link-exact-active {
@@ -71,13 +63,8 @@ nav a:first-of-type {
     padding-right: calc(var(--section-gap) / 2);
   }
 
-  nav svg {
-    margin: 0 2rem 0 0;
-  }
-
   nav .container {
     display: flex;
-    place-items: flex-start;
     flex-wrap: wrap;
   }
 
@@ -88,5 +75,16 @@ nav a:first-of-type {
 
     padding: 1rem 0;
   }
+}
+
+/* Couleurs personnalisées pour TailwindCSS */
+.text-metro-blue {
+  color: var(--metro-blue);
+}
+.bg-metro-blue {
+  background-color: var(--metro-blue);
+}
+.hover\:text-metro-blue:hover {
+  color: var(--metro-blue);
 }
 </style>

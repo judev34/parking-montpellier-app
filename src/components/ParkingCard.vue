@@ -15,12 +15,14 @@ const totalSpots = computed(() => props.parking.totalSpotNumber?.value || 0);
 const occupancyPercentage = computed(() => props.parking.occupancyPercentage || 0);
 
 const statusColor = computed(() => {
-  if (occupancyPercentage.value > 90) return 'bg-red-500';
-  if (occupancyPercentage.value > 70) return 'bg-orange-500';
-  return 'bg-green-500';
+  if (props.parking.status?.value === 'Closed') return 'status-closed';
+  if (occupancyPercentage.value > 90) return 'status-full';
+  if (occupancyPercentage.value > 70) return 'status-limited';
+  return 'status-available';
 });
 
 const statusText = computed(() => {
+  if (props.parking.status?.value === 'Closed') return 'Fermé';
   if (occupancyPercentage.value > 90) return 'Presque complet';
   if (occupancyPercentage.value > 70) return 'Assez occupé';
   return 'Disponible';
@@ -80,7 +82,7 @@ const distance = computed(() => {
         <div class="relative pt-1">
           <div class="flex mb-2 items-center justify-between">
             <div>
-              <span class="text-xs font-semibold inline-block text-blue-600" itemprop="availableSpotNumber">
+              <span class="text-xs font-semibold inline-block" style="color: var(--metro-blue);" itemprop="availableSpotNumber">
                 {{ availableSpots }} places disponibles
               </span>
             </div>
@@ -107,7 +109,8 @@ const distance = computed(() => {
       
       <div v-if="showDetails" class="mt-3 flex justify-end">
         <button 
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+          class="px-4 py-2 text-white rounded-md hover:opacity-90 transition duration-200"
+          style="background-color: var(--metro-blue);"
           @click="router.push({ name: 'home' })"
         >
           Retour à la liste
