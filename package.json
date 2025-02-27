@@ -11,10 +11,13 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "generate-sitemap": "node --experimental-modules src/scripts/generate-sitemap.js",
+    "prebuild": "npm run generate-sitemap"
   },
   "dependencies": {
     "@types/leaflet": "^1.9.16",
+    "@vueuse/head": "^2.0.0",
     "axios": "^1.8.1",
     "chart.js": "^4.4.8",
     "leaflet": "^1.9.4",

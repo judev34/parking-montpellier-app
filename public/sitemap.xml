@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Page d'accueil -->
+  <url>
+    <loc>https://votredomaine.com/</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Pages "À propos" -->
+  <url>
+    <loc>https://votredomaine.com/about</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Exemple de pages dynamiques de parkings (à générer dynamiquement via script) -->
+  <url>
+    <loc>https://votredomaine.com/parking/urn:ngsi-ld:parking:001</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn:ngsi-ld:parking:002</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Ajoutez d'autres parkings ici -->
+</urlset>

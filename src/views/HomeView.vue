@@ -5,6 +5,38 @@ import { useParkingStore } from '@/stores/parking';
 import ParkingMap from '@/components/ParkingMap.vue';
 import ParkingCard from '@/components/ParkingCard.vue';
 import ParkingFilters from '@/components/ParkingFilters.vue';
+import { useHead } from '@vueuse/head';
+
+// Configuration des méta-tags pour l'amélioration du SEO
+useHead({
+  title: 'Parkings Montpellier - Disponibilité en temps réel',
+  meta: [
+    {
+      name: 'description',
+      content: 'Trouvez facilement un parking disponible à Montpellier. Application affichant en temps réel les places disponibles dans les parkings de la ville.'
+    },
+    {
+      name: 'keywords',
+      content: 'parking, Montpellier, places disponibles, stationnement, temps réel, carte interactive'
+    },
+    {
+      property: 'og:title',
+      content: 'Parkings Montpellier - Disponibilité en temps réel'
+    },
+    {
+      property: 'og:description',
+      content: 'Trouvez facilement un parking disponible à Montpellier. Application affichant en temps réel les places disponibles dans les parkings de la ville.'
+    },
+    {
+      property: 'og:type',
+      content: 'website'
+    },
+    {
+      name: 'robots',
+      content: 'index, follow'
+    }
+  ]
+});
 
 // Utiliser le store Pinia
 const parkingStore = useParkingStore();

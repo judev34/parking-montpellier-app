@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useParkingStore } from '@/stores/parking';
 import ParkingMap from '@/components/ParkingMap.vue';
 import ParkingCard from '@/components/ParkingCard.vue';
 import ParkingHistory from '@/components/ParkingHistory.vue';
+import { useHead } from '@vueuse/head';
 
 const route = useRoute();
 const router = useRouter();
@@ -18,6 +19,92 @@ const { selectedParking, parkingHistory, loading, error } = storeToRefs(parkingS
 const isLoaded = computed(() => !!selectedParking.value);
 const totalSpots = computed(() => selectedParking.value?.totalSpotNumber?.value || 0);
 
+// Préparation des données JSON-LD pour Schema.org
+const jsonLdData = computed(() => {
+  if (!selectedParking.value) return {};
+  
+  return {
+    "@context": "https://schema.org",
+    "@type": "ParkingFacility",
+    "name": selectedParking.value.name?.value || 'Parking',
+    "description": `Parking à Montpellier avec ${selectedParking.value.availableSpotNumber?.value || 0} places disponibles sur ${totalSpots.value}`,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Montpellier",
+      "addressRegion": "Occitanie",
+      "addressCountry": "FR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": selectedParking.value.location?.value?.coordinates[1] || 0,
+      "longitude": selectedParking.value.location?.value?.coordinates[0] || 0
+    },
+    "openingHours": "Mo-Su 00:00-23:59",
+    "maximumAttendeeCapacity": totalSpots.value,
+    "availableSpotNumber": selectedParking.value.availableSpotNumber?.value || 0
+  };
+});
+
+// Méta-tags dynamiques pour le SEO
+const updateMetaTags = () => {
+  if (selectedParking.value) {
+    const parkingName = selectedParking.value.name?.value || 'Parking';
+    const availableSpots = selectedParking.value.availableSpotNumber?.value || 0;
+    const totalParkingSpots = totalSpots.value;
+    const occupancyPercentage = selectedParking.value.occupancyPercentage || 0;
+    
+    useHead({
+      title: `${parkingName} - ${availableSpots} places disponibles | Parkings Montpellier`,
+      meta: [
+        {
+          name: 'description',
+          content: `${parkingName} à Montpellier : ${availableSpots} places disponibles sur ${totalParkingSpots} (${100-occupancyPercentage}% libre). Informations en temps réel, adresse et itinéraire.`
+        },
+        {
+          name: 'keywords',
+          content: `parking ${parkingName}, Montpellier, places disponibles, stationnement, ${parkingName}, itinéraire`
+        },
+        {
+          property: 'og:title',
+          content: `${parkingName} - ${availableSpots} places disponibles | Parkings Montpellier`
+        },
+        {
+          property: 'og:description',
+          content: `${parkingName} à Montpellier : ${availableSpots} places disponibles sur ${totalParkingSpots}. Informations en temps réel, adresse et itinéraire.`
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          name: 'robots',
+          content: 'index, follow'
+        }
+      ]
+    });
+  } else {
+    // Méta-tags par défaut si le parking n'est pas chargé
+    useHead({
+      title: 'Détails du parking | Parkings Montpellier',
+      meta: [
+        {
+          name: 'description',
+          content: 'Informations détaillées sur les parkings de Montpellier. Consultez les places disponibles, l\'adresse et l\'itinéraire.'
+        },
+        {
+          name: 'robots',
+          content: 'index, follow'
+        }
+      ]
+    });
+  }
+};
+
+// Mettre à jour les méta-tags quand le parking sélectionné change
+watch(() => selectedParking.value, () => {
+  updateMetaTags();
+}, { immediate: true });
+
 // Charger les détails du parking
 onMounted(async () => {
   if (!parkingId.value) {
@@ -28,8 +115,8 @@ onMounted(async () => {
   // Charger les détails du parking (incluant l'historique)
   await parkingStore.fetchParkingDetails(parkingId.value);
   
-  // Activer le rafraîchissement automatique
-  parkingStore.startAutoRefresh();
+  // Mettre à jour les méta-tags initiaux
+  updateMetaTags();
 });
 
 // Arrêter le rafraîchissement automatique lors du démontage
@@ -46,15 +133,17 @@ function goBack() {
 <template>
   <main class="container mx-auto px-4 py-8">
     <!-- Bouton retour -->
-    <button 
-      @click="goBack" 
-      class="mb-4 flex items-center text-blue-600 hover:text-blue-800"
-    >
-      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-      </svg>
-      Retour à la liste
-    </button>
+    <div class="mb-6">
+      <button 
+        @click="goBack" 
+        class="inline-flex items-center text-blue-600 hover:text-blue-800"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Retour à la liste
+      </button>
+    </div>
     
     <div v-if="loading && !isLoaded" class="flex justify-center py-16">
       <svg class="animate-spin h-12 w-12 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
