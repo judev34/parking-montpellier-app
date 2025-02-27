@@ -15,11 +15,21 @@ export const useParkingStore = defineStore('parking', () => {
     availability: 0, // % minimum de places disponibles
     maxDistance: 0, // distance maximum en mètres (0 = pas de limite)
     userLocation: null as { lat: number; lng: number } | null, // Position de l'utilisateur
+    searchQuery: '', // Recherche par nom de parking
   });
 
   // Getters
   const sortedParkings = computed(() => {
     let result = [...parkings.value];
+    
+    // Filtrer par nom si une recherche est en cours
+    if (filters.value.searchQuery) {
+      const query = filters.value.searchQuery.toLowerCase().trim();
+      result = result.filter(p => {
+        const parkingName = p.name?.value?.toLowerCase() || '';
+        return parkingName.includes(query);
+      });
+    }
     
     // Filtrer par disponibilité
     if (filters.value.availability > 0) {

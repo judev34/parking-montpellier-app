@@ -40,10 +40,29 @@ useHead({
 
 // Utiliser le store Pinia
 const parkingStore = useParkingStore();
-const { sortedParkings, loading, error, lastUpdated } = storeToRefs(parkingStore);
+const { sortedParkings, loading, error, lastUpdated, filters } = storeToRefs(parkingStore);
 
 // État local
 const view = ref<'map' | 'list'>('list'); // Changer la vue par défaut à 'list'
+const searchInput = ref('');
+const formattedLastUpdate = ref('');
+
+// Debounce pour la recherche
+let searchTimeout: number | null = null;
+
+const handleSearch = (event: Event) => {
+  const value = (event.target as HTMLInputElement).value;
+  
+  // Annuler le timeout précédent s'il existe
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+  
+  // Définir un nouveau timeout (300ms de délai)
+  searchTimeout = setTimeout(() => {
+    parkingStore.setFilters({ searchQuery: value });
+  }, 300) as unknown as number;
+};
 
 // Charger les données et commencer le rafraîchissement automatique
 onMounted(() => {
@@ -57,7 +76,6 @@ onUnmounted(() => {
 });
 
 // Formater la date de dernière mise à jour
-const formattedLastUpdate = ref('');
 const updateLastUpdateTime = () => {
   if (lastUpdated.value) {
     formattedLastUpdate.value = new Date(lastUpdated.value).toLocaleString('fr-FR');
@@ -156,7 +174,7 @@ const refreshData = async () => {
     
     <!-- Dernière mise à jour -->
     <div class="text-sm text-gray-500 mb-4" v-if="lastUpdated">
-      <span>Dernière mise à jour: {{ formattedLastUpdate }}</span>
+      <span>Dernière mise à jour : {{ formattedLastUpdate }}</span>
       <button 
         @click="refreshData" 
         class="ml-2 px-2 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
@@ -169,6 +187,32 @@ const refreshData = async () => {
     <!-- Message d'erreur -->
     <div v-if="error" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
       <p>{{ error }}</p>
+    </div>
+    
+    <!-- Barre de recherche -->
+    <div class="mb-4 relative">
+      <div class="relative">
+        <input 
+          type="search" 
+          v-model="searchInput" 
+          @input="handleSearch" 
+          class="w-full p-2 pl-10 border border-gray-300 text-sm text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50"
+          style="focus:ring-color: var(--metro-blue);"
+          placeholder="Rechercher un parking par nom..."
+        >
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          class="h-5 w-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-500" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <div v-if="filters.searchQuery" class="mt-1 text-sm text-gray-500">
+        Résultats pour "{{ filters.searchQuery }}" : {{ sortedParkings.length }} parking(s) trouvé(s)
+      </div>
     </div>
     
     <!-- Vue Carte -->
