@@ -7,6 +7,7 @@ import ParkingMap from '@/components/ParkingMap.vue';
 import ParkingCard from '@/components/ParkingCard.vue';
 import ParkingHistory from '@/components/ParkingHistory.vue';
 import { useHead } from '@vueuse/head';
+import { generateParkingMetaTags } from '@/plugins/seo';
 
 const route = useRoute();
 const router = useRouter();
@@ -45,43 +46,11 @@ const jsonLdData = computed(() => {
   };
 });
 
-// Méta-tags dynamiques pour le SEO
-const updateMetaTags = () => {
+// Mettre à jour les méta-tags quand le parking sélectionné change
+watch(() => selectedParking.value, () => {
   if (selectedParking.value) {
-    const parkingName = selectedParking.value.name?.value || 'Parking';
-    const availableSpots = selectedParking.value.availableSpotNumber?.value || 0;
-    const totalParkingSpots = totalSpots.value;
-    const occupancyPercentage = selectedParking.value.occupancyPercentage || 0;
-    
-    useHead({
-      title: `${parkingName} - ${availableSpots} places disponibles | Parkings Montpellier`,
-      meta: [
-        {
-          name: 'description',
-          content: `${parkingName} à Montpellier : ${availableSpots} places disponibles sur ${totalParkingSpots} (${100-occupancyPercentage}% libre). Informations en temps réel, adresse et itinéraire.`
-        },
-        {
-          name: 'keywords',
-          content: `parking ${parkingName}, Montpellier, places disponibles, stationnement, ${parkingName}, itinéraire`
-        },
-        {
-          property: 'og:title',
-          content: `${parkingName} - ${availableSpots} places disponibles | Parkings Montpellier`
-        },
-        {
-          property: 'og:description',
-          content: `${parkingName} à Montpellier : ${availableSpots} places disponibles sur ${totalParkingSpots}. Informations en temps réel, adresse et itinéraire.`
-        },
-        {
-          property: 'og:type',
-          content: 'website'
-        },
-        {
-          name: 'robots',
-          content: 'index, follow'
-        }
-      ]
-    });
+    // Utiliser la fonction helper pour générer les méta-tags
+    useHead(generateParkingMetaTags(selectedParking.value));
   } else {
     // Méta-tags par défaut si le parking n'est pas chargé
     useHead({
@@ -98,11 +67,6 @@ const updateMetaTags = () => {
       ]
     });
   }
-};
-
-// Mettre à jour les méta-tags quand le parking sélectionné change
-watch(() => selectedParking.value, () => {
-  updateMetaTags();
 }, { immediate: true });
 
 // Charger les détails du parking
@@ -114,9 +78,6 @@ onMounted(async () => {
   
   // Charger les détails du parking (incluant l'historique)
   await parkingStore.fetchParkingDetails(parkingId.value);
-  
-  // Mettre à jour les méta-tags initiaux
-  updateMetaTags();
 });
 
 // Arrêter le rafraîchissement automatique lors du démontage

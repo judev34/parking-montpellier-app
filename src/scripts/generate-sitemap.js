@@ -1,10 +1,16 @@
 // Script pour générer dynamiquement le sitemap.xml
-const fs = require('fs');
-const axios = require('axios');
-const dotenv = require('dotenv');
+import fs from 'fs';
+import axios from 'axios';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+// Obtenir le chemin du répertoire actuel
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Charger les variables d'environnement
-dotenv.config();
+dotenv.config({ path: resolve(__dirname, '../../.env') });
 
 const API_BASE_URL = process.env.VITE_API_BASE_URL || 'https://portail-api-data.montpellier3m.fr';
 const DOMAIN = process.env.VITE_DOMAIN || 'https://votredomaine.com';
@@ -56,7 +62,7 @@ async function generateSitemap() {
 </urlset>`;
     
     // Écrire le fichier
-    fs.writeFileSync('./public/sitemap.xml', sitemap);
+    fs.writeFileSync(resolve(__dirname, '../../public/sitemap.xml'), sitemap);
     console.log(`Sitemap généré avec ${response.data.length} parkings`);
   } catch (error) {
     console.error('Erreur lors de la génération du sitemap:', error);

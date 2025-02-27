@@ -8,26 +8,155 @@
     <priority>1.0</priority>
   </url>
   
-  <!-- Pages "À propos" -->
+  <!-- Page "À propos" -->
   <url>
     <loc>https://votredomaine.com/about</loc>
     <lastmod>2025-02-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
-  <!-- Exemple de pages dynamiques de parkings (à générer dynamiquement via script) -->
   <url>
-    <loc>https://votredomaine.com/parking/urn:ngsi-ld:parking:001</loc>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A001</loc>
     <lastmod>2025-02-27</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://votredomaine.com/parking/urn:ngsi-ld:parking:002</loc>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A003</loc>
     <lastmod>2025-02-27</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>
-  <!-- Ajoutez d'autres parkings ici -->
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A004</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A005</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A006</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A007</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A008</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A009</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A010</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A011</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A012</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A013</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A014</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A015</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A016</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A017</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A018</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A019</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A020</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A021</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A022</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A024</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A002</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://votredomaine.com/parking/urn%3Angsi-ld%3Aparking%3A025</loc>
+    <lastmod>2025-02-27</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

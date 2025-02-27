@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
+import AppFooter from '@/components/AppFooter.vue';
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div class="min-h-screen bg-gray-100 flex flex-col">
     <nav class="bg-blue-600 text-white shadow-md">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
         <div class="flex items-center space-x-2">
@@ -19,26 +20,11 @@ import { RouterView } from 'vue-router';
       </div>
     </nav>
 
-    <RouterView />
+    <main class="flex-grow">
+      <RouterView />
+    </main>
 
-    <footer class="mt-12 py-6 bg-gray-800 text-white">
-      <div class="container mx-auto px-4">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-          <div class="mb-4 md:mb-0">
-            <h3 class="text-lg font-semibold">Parkings Montpellier</h3>
-            <p class="text-sm text-gray-400">Application en temps réel de suivi des parkings</p>
-          </div>
-          <div class="text-sm text-gray-400">
-            <p> 2025 - Données fournies par l'API Open Data de Montpellier</p>
-            <p>
-              <a href="https://data.montpellier3m.fr/" class="text-blue-300 hover:text-blue-200 underline" target="_blank">
-                Portail Open Data
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <AppFooter />
   </div>
 </template>
 

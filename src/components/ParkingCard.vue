@@ -59,10 +59,12 @@ const distance = computed(() => {
     class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
     :class="{ 'cursor-pointer': !showDetails }"
     @click="!showDetails && goToDetails()"
+    itemscope
+    itemtype="https://schema.org/ParkingFacility"
   >
     <div class="p-4">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-800">{{ parkingName }}</h3>
+        <h3 class="text-lg font-semibold text-gray-800" itemprop="name">{{ parkingName }}</h3>
         <span v-if="distance" class="text-sm text-gray-500">{{ distance }}</span>
       </div>
 
@@ -78,12 +80,12 @@ const distance = computed(() => {
         <div class="relative pt-1">
           <div class="flex mb-2 items-center justify-between">
             <div>
-              <span class="text-xs font-semibold inline-block text-blue-600">
+              <span class="text-xs font-semibold inline-block text-blue-600" itemprop="availableSpotNumber">
                 {{ availableSpots }} places disponibles
               </span>
             </div>
             <div class="text-right">
-              <span class="text-xs font-semibold inline-block">
+              <span class="text-xs font-semibold inline-block" itemprop="maximumAttendeeCapacity">
                 {{ totalSpots }} places totales
               </span>
             </div>
@@ -98,8 +100,10 @@ const distance = computed(() => {
       </div>
       
       <div class="mt-3 text-xs text-gray-500 flex justify-between">
-        <span>Dernière mise à jour: {{ formattedDate }}</span>
+        <span>Dernière mise à jour: <time itemprop="dateModified">{{ formattedDate }}</time></span>
       </div>
+      
+      <meta itemprop="address" content="Montpellier, France" />
       
       <div v-if="showDetails" class="mt-3 flex justify-end">
         <button 
