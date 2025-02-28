@@ -42,9 +42,11 @@ export interface ParkingHistoryPoint {
   recvTime: string;
 }
 
-// Interface pour les séries temporelles avec le format standard NGSI-LD
+// Interface pour la réponse de l'API temporelle NGSI-LD
 export interface ParkingTimeSeriesResponse {
-  attributeNames: string[];
+  attrName: string;
+  entityId: string;
+  entityType?: string;
   index: string[];  // Liste des timestamps
-  values: number[][]; // Tableau 2D des valeurs pour chaque timestamp et attribut
+  values: number[]; // Tableau simple des valeurs pour chaque timestamp
 }

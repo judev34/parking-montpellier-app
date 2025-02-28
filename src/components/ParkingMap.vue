@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import { createApp } from 'vue';
 import ParkingPopup from './ParkingPopup.vue';
 import type { Parking } from '@/types/parking';
+import router from '@/router';
 
 // Importer les images de marqueurs (à ajouter dans le dossier public)
 // Fix pour l'icône de Leaflet qui n'est pas chargée par défaut
@@ -168,6 +169,10 @@ function createParkingMarker(parking: Parking) {
   
   // Créer une nouvelle instance de l'application Vue avec le composant ParkingPopup
   const popupApp = createApp(ParkingPopup, { parking });
+  
+  // Injecter le router dans l'application du popup
+  popupApp.use(router);
+  
   popupApp.mount(popupContent);
   
   // Attacher le popup au marqueur

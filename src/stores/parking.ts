@@ -3,6 +3,24 @@ import { defineStore } from 'pinia';
 import type { Parking, ParkingTimeSeriesResponse } from '@/types/parking';
 import { parkingApi } from '@/services/api';
 
+// Récupérer la recherche sauvegardée dans le localStorage
+const getSavedSearchQuery = (): string => {
+  try {
+    return localStorage.getItem('parkingSearchQuery') || '';
+  } catch (e) {
+    return '';
+  }
+};
+
+// Sauvegarder la recherche dans le localStorage
+const saveSearchQuery = (query: string): void => {
+  try {
+    localStorage.setItem('parkingSearchQuery', query);
+  } catch (e) {
+    console.error('Erreur lors de la sauvegarde de la recherche:', e);
+  }
+};
+
 export const useParkingStore = defineStore('parking', () => {
   // État
   const parkings = ref<Parking[]>([]);
@@ -15,7 +33,7 @@ export const useParkingStore = defineStore('parking', () => {
     availability: 0, // % minimum de places disponibles
     maxDistance: 0, // distance maximum en mètres (0 = pas de limite)
     userLocation: null as { lat: number; lng: number } | null, // Position de l'utilisateur
-    searchQuery: '', // Recherche par nom de parking
+    searchQuery: getSavedSearchQuery(), // Initialiser avec la valeur sauvegardée
   });
 
   // Getters
@@ -102,18 +120,15 @@ export const useParkingStore = defineStore('parking', () => {
       error.value = null;
       selectedParking.value = await parkingApi.getParkingById(parkingId);
       
-      // Désactiver temporairement l'historique car la route n'existe pas
-      parkingHistory.value = null;
-      console.log("La récupération de l'historique est désactivée car la route /offstreetparking/timeseries n'existe pas");
+      console.log(`Récupération des détails du parking ${parkingId} réussie`);
       
-      /* Route désactivée - fonction conservée pour référence
+      // Activer la récupération de l'historique
       try {
-        parkingHistory.value = await parkingApi.getParkingHistory(parkingId);
+        await fetchParkingHistory(parkingId);
       } catch (historyError) {
         console.warn("Erreur lors de la récupération de l'historique", historyError);
         parkingHistory.value = null;
       }
-      */
     } catch (err) {
       error.value = "Erreur lors du chargement des détails du parking. Veuillez réessayer.";
       console.error(err);
@@ -122,8 +137,29 @@ export const useParkingStore = defineStore('parking', () => {
     }
   }
   
+  /**
+   * Récupère l'historique des places disponibles pour un parking
+   */
+  async function fetchParkingHistory(parkingId: string, options = { interval: 'hour', period: 'week' }) {
+    try {
+      console.log(`Récupération de l'historique pour le parking ${parkingId}`);
+      parkingHistory.value = await parkingApi.getParkingHistory(parkingId, options);
+      console.log(`Historique récupéré avec ${parkingHistory.value?.index?.length || 0} points de données`);
+      return parkingHistory.value;
+    } catch (err) {
+      console.error("Erreur lors de la récupération de l'historique", err);
+      // En cas d'erreur, tenter d'utiliser des données simulées
+      parkingHistory.value = parkingApi.generateHistoryDataByDay(options.period);
+      return parkingHistory.value;
+    }
+  }
+  
   function setFilters(newFilters: Partial<typeof filters.value>) {
     filters.value = { ...filters.value, ...newFilters };
+    // Sauvegarder la recherche si elle est modifiée
+    if ('searchQuery' in newFilters) {
+      saveSearchQuery(newFilters.searchQuery);
+    }
   }
   
   function refreshData() {
@@ -186,6 +222,7 @@ export const useParkingStore = defineStore('parking', () => {
     sortedParkings,
     fetchAllParkings,
     fetchParkingDetails,
+    fetchParkingHistory,
     setFilters,
     refreshData,
     updateDistances,

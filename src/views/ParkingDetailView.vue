@@ -5,7 +5,8 @@ import { storeToRefs } from 'pinia';
 import { useParkingStore } from '@/stores/parking';
 import ParkingMap from '@/components/ParkingMap.vue';
 import ParkingCard from '@/components/ParkingCard.vue';
-import ParkingHistory from '@/components/ParkingHistory.vue';
+import ParkingHistoryWeekly from '@/components/ParkingHistoryWeekly.vue';
+import ParkingHistoryTimeslots from '@/components/ParkingHistoryTimeslots.vue';
 import { useHead } from '@vueuse/head';
 import { generateParkingMetaTags } from '@/plugins/seo';
 
@@ -140,9 +141,12 @@ function goBack() {
         </div>
         
         <!-- Historique d'occupation -->
-        <div class="bg-white rounded-lg shadow-md p-4">
+        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
           <h2 class="text-lg font-semibold mb-3" style="color: var(--metro-blue);">Historique d'occupation</h2>
-          <ParkingHistory :parkingId="parkingId" />
+          <div class="space-y-6">
+            <ParkingHistoryWeekly :parkingId="parkingId" />
+            <ParkingHistoryTimeslots :parkingId="parkingId" />
+          </div>
         </div>
       </div>
       

@@ -44,7 +44,7 @@ const { sortedParkings, loading, error, lastUpdated, filters } = storeToRefs(par
 
 // État local
 const view = ref<'map' | 'list'>('list'); // Changer la vue par défaut à 'list'
-const searchInput = ref('');
+const searchInput = ref(filters.value.searchQuery); // Initialiser avec la valeur du store
 const formattedLastUpdate = ref('');
 
 // Debounce pour la recherche
@@ -85,6 +85,11 @@ const updateLastUpdateTime = () => {
 // Observer les changements de lastUpdated
 watch(lastUpdated, () => {
   updateLastUpdateTime();
+});
+
+// Observer les changements de filtres pour mettre à jour le champ de recherche
+watch(() => filters.value.searchQuery, (newQuery) => {
+  searchInput.value = newQuery;
 });
 
 // Rafraîchir manuellement les données
