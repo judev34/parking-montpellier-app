@@ -10,6 +10,7 @@ import ParkingHistoryTimeslots from '@/components/ParkingHistoryTimeslots.vue';
 import ParkingAdditionalInfo from '@/components/ParkingAdditionalInfo.vue';
 import { useHead } from '@vueuse/head';
 import { generateParkingMetaTags } from '@/plugins/seo';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const route = useRoute();
 const router = useRouter();
@@ -130,6 +131,7 @@ function goBack() {
         class="mt-2 px-4 py-2 rounded-md text-white"
         style="background-color: var(--metro-blue);"
       >
+        <FontAwesomeIcon :icon="['fas', 'arrow-left']" class="mr-1" />
         Retour à la liste
       </button>
     </div>
@@ -137,15 +139,21 @@ function goBack() {
     <!-- Contenu principal -->
     <div v-else-if="selectedParking" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Carte du parking -->
-      <div class="lg:col-span-2">
+      <div class="order-2 lg:order-1 lg:col-span-2">
         <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-          <h2 class="text-lg font-semibold mb-3" style="color: var(--metro-blue);">Localisation</h2>
+          <h2 class="text-lg font-semibold mb-3" style="color: var(--metro-blue);">
+            <FontAwesomeIcon icon="fa-solid fa-map-marker-alt" class="mr-2" />
+            Localisation
+          </h2>
           <ParkingMap :height="'50vh'" :selectedParkingId="parkingId" />
         </div>
         
         <!-- Historique d'occupation -->
         <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-          <h2 class="text-lg font-semibold mb-3" style="color: var(--metro-blue);">Historique d'occupation</h2>
+          <h2 class="text-lg font-semibold mb-3" style="color: var(--metro-blue);">
+            <FontAwesomeIcon icon="fa-solid fa-chart-line" class="mr-2" />
+            Historique d'occupation
+          </h2>
           <div class="space-y-6">
             <ParkingHistoryWeekly :parkingId="parkingId" />
             <ParkingHistoryTimeslots :parkingId="parkingId" />
@@ -170,6 +178,7 @@ function goBack() {
         class="px-4 py-2 rounded-md text-white"
         style="background-color: var(--metro-blue);"
       >
+        <FontAwesomeIcon :icon="['fas', 'arrow-left']" class="mr-1" />
         Retour à la liste
       </button>
     </div>

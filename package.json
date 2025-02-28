@@ -16,6 +16,11 @@
     "prebuild": "npm run generate-sitemap"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
     "@types/leaflet": "^1.9.16",
     "@vueuse/head": "^2.0.0",
     "axios": "^1.8.1",

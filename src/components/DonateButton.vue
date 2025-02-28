@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // Props pour personnaliser le bouton
 const props = defineProps({
@@ -22,20 +23,38 @@ const props = defineProps({
   showModal: {
     type: Boolean,
     default: false
+  },
+  hideButton: {
+    type: Boolean,
+    default: false
   }
 });
 
+// Émettre des événements
+const emit = defineEmits(['close-modal']);
+
 // État local pour gérer l'affichage du modal
 const isModalOpen = ref(props.showModal);
+
+// Observer les changements de la prop showModal
+watch(() => props.showModal, (newValue) => {
+  isModalOpen.value = newValue;
+});
 
 // Méthode pour ouvrir le modal
 const openModal = () => {
   isModalOpen.value = true;
 };
 
+// Exposition de la méthode openModal pour l'accès externe
+defineExpose({
+  openModal
+});
+
 // Méthode pour fermer le modal
 const closeModal = () => {
   isModalOpen.value = false;
+  emit('close-modal');
 };
 
 // Méthode pour créer un lien PayPal avec un montant spécifique
@@ -48,15 +67,13 @@ const createPaypalLink = (amount: number) => {
   <div>
     <!-- Bouton pour ouvrir le modal -->
     <button 
+      v-if="!props.hideButton && !isModalOpen"
       @click="openModal" 
       class="px-4 py-2 rounded-lg text-white transition-colors"
       style="background-color: var(--metro-blue);"
     >
       <div class="flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 4.643-5.813 4.643h-2.189c-.11 0-.216.022-.302.066l-.705 4.47h2.145c.408 0 .752-.287.815-.689l.033-.175.653-4.11.042-.227a.818.818 0 0 1 .814-.69h.515c3.313 0 5.91-1.343 6.669-5.22.3-1.532.144-2.8-.529-3.782z" />
-          <path d="M20.717 8.361a7.347 7.347 0 0 0-.246-.516 4.57 4.57 0 0 0-.48-.752 4.236 4.236 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 4.643-5.813 4.643h-2.189a.796.796 0 0 0-.302.066l-.705 4.47h2.145c.408 0 .752-.287.815-.689l.033-.175.653-4.11.042-.227a.818.818 0 0 1 .814-.69h.515c3.313 0 5.91-1.343 6.669-5.22.3-1.532.144-2.8-.529-3.782a4.236 4.236 0 0 0-.774-1.18c-.375-.392-.853-.712-1.432-.942-1.155-.462-2.55-.59-4.021-.59H9.73c-.524 0-.968.382-1.05.9L5.554 20.597a.641.641 0 0 0 .633.74h4.607a.818.818 0 0 0 .808-.687l.82-5.173-.023.124z" />
-        </svg>
+        <FontAwesomeIcon :icon="['fab', 'paypal']" class="mr-2" />
         {{ buttonText }}
       </div>
     </button>
@@ -69,9 +86,7 @@ const createPaypalLink = (amount: number) => {
           @click="closeModal" 
           class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <FontAwesomeIcon :icon="['fas', 'xmark']" />
         </button>
         
         <!-- Contenu du modal -->
@@ -98,7 +113,7 @@ const createPaypalLink = (amount: number) => {
           
           <!-- Lien pour montant personnalisé -->
           <a 
-            :href="`https://www.paypal.com/donate/?business=${encodeURIComponent(paypalEmail)}&currency_code=${currency}`"
+            :href="`https://www.paypal.com/donate/?business=${encodeURIComponent(props.paypalEmail)}&currency_code=${props.currency}`"
             target="_blank"
             rel="noopener noreferrer"
             class="text-sm hover:underline"
@@ -119,7 +134,11 @@ const createPaypalLink = (amount: number) => {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 </style>

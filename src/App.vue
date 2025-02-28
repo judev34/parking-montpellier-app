@@ -2,9 +2,15 @@
 import { RouterView, RouterLink } from 'vue-router';
 import AppFooter from '@/components/AppFooter.vue';
 import DonateBanner from '@/components/DonateBanner.vue';
+import DonateButton from '@/components/DonateButton.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { ref } from 'vue';
 
 // Configurer l'email PayPal pour les dons
 const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayPal
+
+// État pour contrôler l'affichage modal
+const showDonateModal = ref(false);
 </script>
 
 <template>
@@ -21,6 +27,10 @@ const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayP
         <div class="flex">
           <RouterLink to="/" class="hover:text-metro-blue">Accueil</RouterLink>
           <RouterLink to="/about" class="hover:text-metro-blue">À propos</RouterLink>
+          <a href="#" @click.prevent="showDonateModal = true" class="hover:text-metro-blue flex items-center">
+            <FontAwesomeIcon :icon="['fab', 'paypal']" class="mr-1" />
+            Faire un don
+          </a>
         </div>
       </div>
     </nav>
@@ -30,6 +40,14 @@ const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayP
     </main>
     
     <AppFooter />
+    
+    <!-- Modal de don directement intégré dans App.vue -->
+    <DonateButton 
+      :paypal-email="paypalEmail" 
+      :show-modal="showDonateModal" 
+      @close-modal="showDonateModal = false"
+      hide-button
+    />
   </div>
 </template>
 
@@ -79,7 +97,6 @@ nav a:first-of-type {
     text-align: left;
     margin-left: -1rem;
     font-size: 1rem;
-
     padding: 1rem 0;
   }
 }

@@ -2,6 +2,7 @@
 import type { Parking } from '@/types/parking';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const props = defineProps<{
   parking: Parking;
@@ -66,8 +67,14 @@ const distance = computed(() => {
   >
     <div class="p-4">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-800" itemprop="name">{{ parkingName }}</h3>
-        <span v-if="distance" class="text-sm text-gray-500">{{ distance }}</span>
+        <h3 class="text-lg font-semibold text-gray-800" itemprop="name">
+          <FontAwesomeIcon :icon="['fas', 'square-parking']" class="mr-2" />
+          {{ parkingName }}
+        </h3>
+        <span v-if="distance" class="text-sm text-gray-500">
+          <FontAwesomeIcon :icon="['fas', 'map-marker-alt']" class="mr-1" />
+          {{ distance }}
+        </span>
       </div>
 
       <div class="mt-2 flex items-center">
@@ -83,6 +90,7 @@ const distance = computed(() => {
           <div class="flex mb-2 items-center justify-between">
             <div>
               <span class="text-xs font-semibold inline-block" style="color: var(--metro-blue);" itemprop="availableSpotNumber">
+                <FontAwesomeIcon :icon="['fas', 'car-side']" class="mr-1" />
                 {{ availableSpots }} places disponibles
               </span>
             </div>
