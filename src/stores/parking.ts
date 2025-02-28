@@ -192,16 +192,16 @@ export const useParkingStore = defineStore('parking', () => {
     return R * c; // Distance en mètres
   }
   
-  // Mettre en place le rafraîchissement automatique des données toutes les 2 minutes
+  // Mettre en place le rafraîchissement automatique des données toutes les 5 minutes
   let refreshInterval: number | null = null;
   
   function startAutoRefresh() {
     if (refreshInterval) return;
     
-    // Utiliser setInterval pour actualiser les données toutes les 2 minutes
+    // Utiliser setInterval pour actualiser les données toutes les 5 minutes
     refreshInterval = window.setInterval(() => {
       fetchAllParkings();
-    }, 2 * 60 * 1000);
+    }, 5 * 60 * 1000);
   }
   
   function stopAutoRefresh() {

@@ -7,6 +7,7 @@ import ParkingMap from '@/components/ParkingMap.vue';
 import ParkingCard from '@/components/ParkingCard.vue';
 import ParkingHistoryWeekly from '@/components/ParkingHistoryWeekly.vue';
 import ParkingHistoryTimeslots from '@/components/ParkingHistoryTimeslots.vue';
+import ParkingAdditionalInfo from '@/components/ParkingAdditionalInfo.vue';
 import { useHead } from '@vueuse/head';
 import { generateParkingMetaTags } from '@/plugins/seo';
 
@@ -43,7 +44,9 @@ const jsonLdData = computed(() => {
     },
     "openingHours": "Mo-Su 00:00-23:59",
     "maximumAttendeeCapacity": totalSpots.value,
-    "availableSpotNumber": selectedParking.value.availableSpotNumber?.value || 0
+    "availableSpotNumber": selectedParking.value.availableSpotNumber?.value || 0,
+    ...(selectedParking.value.maxHeight?.value ? { "maximumVehicleHeight": selectedParking.value.maxHeight.value } : {}),
+    ...(selectedParking.value.levelNumber?.value ? { "numberOfLevels": selectedParking.value.levelNumber.value } : {})
   };
 });
 
@@ -155,35 +158,7 @@ function goBack() {
         <ParkingCard :parking="selectedParking" :showDetails="true" />
         
         <!-- Informations supplémentaires -->
-        <div class="bg-white rounded-lg shadow-md p-4 mt-6">
-          <h2 class="text-lg font-semibold mb-3" style="color: var(--metro-blue);">Informations</h2>
-          
-          <div class="space-y-3">
-            <div v-if="selectedParking.description?.value">
-              <h3 class="text-sm font-medium text-gray-700">Description</h3>
-              <p class="text-gray-600">{{ selectedParking.description.value }}</p>
-            </div>
-            
-            <div v-if="selectedParking.location?.value">
-              <h3 class="text-sm font-medium text-gray-700">Adresse</h3>
-              <p class="text-gray-600">{{ selectedParking.location.value.coordinates[1] }}, {{ selectedParking.location.value.coordinates[0] }}</p>
-              <a 
-                :href="`https://www.google.com/maps/dir/?api=1&destination=${selectedParking.location.value.coordinates[1]},${selectedParking.location.value.coordinates[0]}`" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="inline-block mt-2 px-3 py-1 rounded-md text-white text-sm"
-                style="background-color: var(--metro-blue);"
-              >
-                Itinéraire
-              </a>
-            </div>
-            
-            <div>
-              <h3 class="text-sm font-medium text-gray-700">Dernière mise à jour</h3>
-              <p class="text-gray-600">{{ new Date(selectedParking.availableSpotNumber?.metadata?.timestamp?.value || '').toLocaleString('fr-FR') }}</p>
-            </div>
-          </div>
-        </div>
+        <ParkingAdditionalInfo :parking="selectedParking" />
       </div>
     </div>
     

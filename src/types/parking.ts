@@ -16,6 +16,15 @@ export interface ParkingValue<T> {
   metadata?: ParkingMetadata;
 }
 
+// Type pour les informations supplémentaires des parkings depuis /parkingspaces
+export interface ParkingSpace {
+  id: string;
+  name: string;
+  maxHeight?: number;
+  levelNumber?: number;
+  [key: string]: any; // Pour les autres propriétés que nous pourrions vouloir utiliser plus tard
+}
+
 export interface Parking {
   id: string;
   type: string;
@@ -33,6 +42,9 @@ export interface Parking {
   totalSpotNumber?: ParkingValue<number>;
   occupancyPercentage?: number; // Calculé côté client
   remainingSpots?: number; // Calculé côté client
+  // Informations supplémentaires
+  maxHeight?: { type: string; value: number };
+  levelNumber?: { type: string; value: number };
 }
 
 export interface ParkingHistoryPoint {

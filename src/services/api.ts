@@ -1,5 +1,10 @@
 import axios from 'axios';
-import type { Parking, ParkingTimeSeriesResponse } from '@/types/parking';
+import type { 
+  Parking, 
+  ParkingHistoryPoint, 
+  ParkingTimeSeriesResponse,
+  ParkingSpace
+} from '@/types/parking';
 
 const API_BASE_URL = 'https://portail-api-data.montpellier3m.fr';
 const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes en millisecondes
@@ -11,6 +16,11 @@ interface CacheItem<T> {
 }
 
 const cache: Record<string, CacheItem<any>> = {};
+
+// Cache pour les données des parkingspaces (pour éviter de faire trop d'appels)
+let parkingSpacesCache: ParkingSpace[] | null = null;
+let parkingSpacesCacheTimestamp: number | null = null;
+const PARKINGSPACES_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 heures en millisecondes
 
 // Fonction utilitaire pour obtenir des données avec mise en cache
 async function getWithCache<T>(url: string): Promise<T> {
@@ -51,6 +61,100 @@ async function getWithCache<T>(url: string): Promise<T> {
   }
 }
 
+/**
+ * Récupère les informations supplémentaires des parkings depuis l'API /parkingspaces
+ * Cette fonction utilise un cache pour éviter de faire trop d'appels à l'API
+ */
+async function getParkingSpaces(): Promise<ParkingSpace[]> {
+  // Vérifier si les données sont en cache et si elles sont encore valides
+  const now = Date.now();
+  if (parkingSpacesCache && parkingSpacesCacheTimestamp && now - parkingSpacesCacheTimestamp < PARKINGSPACES_CACHE_DURATION) {
+    return parkingSpacesCache;
+  }
+
+  try {
+    const response = await axios.get(`${API_BASE_URL}/parkingspaces`);
+    
+    if (response.data && Array.isArray(response.data)) {
+      // Transformer les données pour extraire les informations qui nous intéressent
+      const parkingSpaces: ParkingSpace[] = response.data.map((item: any) => {
+        const parkingSpace: ParkingSpace = {
+          id: item.id || '',
+          name: item.name?.value || '',
+        };
+        console.log('parkingSpace:', parkingSpace);
+        console.log(item);
+        
+
+        // Extraire la hauteur maximale si disponible
+        if (item.maxHeight?.value) {
+          parkingSpace.maxHeight = parseFloat(item.maxHeight.value);
+        }
+        
+        // Extraire le nombre d'étages si disponible
+        if (item.levelNumber?.value) {
+          parkingSpace.levelNumber = parseInt(item.levelNumber.value, 10);
+        }
+        
+        return parkingSpace;
+      });
+      
+      // Mettre en cache les données
+      parkingSpacesCache = parkingSpaces;
+      parkingSpacesCacheTimestamp = now;
+      
+      return parkingSpaces;
+    }
+    
+    return [];
+  } catch (error) {
+    console.error('Erreur lors de la récupération des données parkingspaces:', error);
+    // En cas d'erreur, retourner le cache s'il existe, sinon un tableau vide
+    return parkingSpacesCache || [];
+  }
+}
+
+/**
+ * Enrichit les parkings avec les informations supplémentaires des parkingspaces
+ */
+async function enrichParkingsWithSpaceInfo(parkings: Parking[]): Promise<Parking[]> {
+  try {
+    const parkingSpaces = await getParkingSpaces();
+    
+    // Créer un map pour faciliter la recherche par nom
+    const parkingSpacesByName = new Map<string, ParkingSpace>();
+    parkingSpaces.forEach(space => {
+      if (space.name) {
+        // Normaliser les noms pour faciliter la correspondance
+        const normalizedName = space.name.toLowerCase().trim();
+        parkingSpacesByName.set(normalizedName, space);
+      }
+    });
+    
+    // Enrichir chaque parking avec les informations supplémentaires
+    return parkings.map(parking => {
+      const parkingName = parking.name?.value?.toLowerCase().trim() || '';
+      const parkingSpace = parkingSpacesByName.get(parkingName);
+      
+      if (parkingSpace) {
+        // Ajouter les informations supplémentaires au parking
+        if (parkingSpace.maxHeight !== undefined) {
+          parking.maxHeight = { type: 'Number', value: parkingSpace.maxHeight };
+        }
+        
+        if (parkingSpace.levelNumber !== undefined) {
+          parking.levelNumber = { type: 'Number', value: parkingSpace.levelNumber };
+        }
+      }
+      
+      return parking;
+    });
+  } catch (error) {
+    console.error('Erreur lors de l\'enrichissement des parkings:', error);
+    return parkings; // Retourner les parkings non enrichis en cas d'erreur
+  }
+}
+
 export const parkingApi = {
   /**
    * Récupère la liste de tous les parkings
@@ -87,7 +191,9 @@ export const parkingApi = {
       }
       
       // Enrichir les données avec des calculs supplémentaires
-      return parkings.map(parking => {
+      const enrichedParkings = await enrichParkingsWithSpaceInfo(parkings);
+      
+      return enrichedParkings.map(parking => {
         const available = parking.availableSpotNumber?.value || 0;
         const total = parking.totalSpotNumber?.value || 0;
         
@@ -140,8 +246,11 @@ export const parkingApi = {
       const available = parking.availableSpotNumber?.value || 0;
       const total = parking.totalSpotNumber?.value || 0;
       
+      // Enrichir les données avec les informations supplémentaires des parkingspaces
+      const enrichedParking = await enrichParkingsWithSpaceInfo([parking]);
+      
       return {
-        ...parking,
+        ...enrichedParking[0],
         occupancyPercentage: total ? Math.round(((total - available) / total) * 100) : 0,
         remainingSpots: available
       };
@@ -346,7 +455,17 @@ export const parkingApi = {
       index,
       values
     };
-  }
+  },
+  
+  /**
+   * Récupère les informations supplémentaires des parkings depuis l'API /parkingspaces
+   */
+  getParkingSpaces,
+  
+  /**
+   * Enrichit les parkings avec les informations supplémentaires des parkingspaces
+   */
+  enrichParkingsWithSpaceInfo
 };
 
 export default parkingApi;
