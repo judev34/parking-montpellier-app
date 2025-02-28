@@ -154,7 +154,7 @@ function goBack() {
       </div>
       
       <!-- Détails du parking -->
-      <div>
+      <div class="mobile-first">
         <ParkingCard :parking="selectedParking" :showDetails="true" />
         
         <!-- Informations supplémentaires -->
@@ -175,3 +175,12 @@ function goBack() {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Styles pour l'affichage sur mobile et desktop */
+@media (max-width: 1023px) {
+  .mobile-first {
+    order: -1;
+  }
+}
+</style>
