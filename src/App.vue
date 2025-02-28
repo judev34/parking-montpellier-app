@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
+import { RouterView, RouterLink } from 'vue-router';
 import AppFooter from '@/components/AppFooter.vue';
+import DonateBanner from '@/components/DonateBanner.vue';
+
+// Configurer l'email PayPal pour les dons
+const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayPal
 </script>
 
 <template>
   <div class="min-h-screen flex flex-col">
+    <!-- Bannière de don occasionnelle -->
+    <DonateBanner :paypal-email="paypalEmail" />
+    
     <nav class="bg-white text-gray-800 shadow-md">
       <div class="container mx-auto px-2 flex justify-between items-center">
         <div class="flex items-center">
@@ -12,8 +19,8 @@ import AppFooter from '@/components/AppFooter.vue';
           <h1 class="text-xl font-bold" style="color: var(--metro-blue);">Parkings</h1>
         </div>
         <div class="flex">
-          <router-link to="/" class="hover:text-metro-blue">Accueil</router-link>
-          <router-link to="/about" class="hover:text-metro-blue">À propos</router-link>
+          <RouterLink to="/" class="hover:text-metro-blue">Accueil</RouterLink>
+          <RouterLink to="/about" class="hover:text-metro-blue">À propos</RouterLink>
         </div>
       </div>
     </nav>
@@ -21,7 +28,7 @@ import AppFooter from '@/components/AppFooter.vue';
     <main class="flex-grow">
       <RouterView />
     </main>
-
+    
     <AppFooter />
   </div>
 </template>

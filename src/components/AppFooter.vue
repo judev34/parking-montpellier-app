@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
+import DonateButton from './DonateButton.vue';
+
+// Configurer l'email PayPal pour les dons
+const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayPal
 </script>
 
 <template>
@@ -33,11 +37,14 @@ import { RouterLink } from 'vue-router';
           <p class="text-gray-600">
             Email: <a href="mailto:contact@votredomaine.com" class="hover:underline" style="color: var(--metro-blue);">contact@votredomaine.com</a>
           </p>
+          <div class="mt-4">
+            <DonateButton :paypal-email="paypalEmail" />
+          </div>
         </div>
       </div>
       
       <div class="border-t border-gray-300 mt-8 pt-6 text-center text-gray-500 text-sm">
-        <p> {{ new Date().getFullYear() }} Parkings Montpellier. Tous droits réservés.</p>
+        <p>&copy; {{ new Date().getFullYear() }} Parkings Montpellier. Tous droits réservés.</p>
         <p class="mt-2">
           Données fournies par <a href="https://data.montpellier3m.fr/" target="_blank" rel="noopener noreferrer" class="hover:underline" style="color: var(--metro-blue);">Montpellier Méditerranée Métropole</a>
         </p>
