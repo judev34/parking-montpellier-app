@@ -16,19 +16,19 @@ const tipeeDonationUrl = config.tipeeDonationUrl;
     <DonateBanner />
     
     <nav class="bg-white text-gray-800 shadow-md">
-      <div class="container mx-auto px-2 flex justify-between items-center">
-        <div class="flex items-center">
-          <RouterLink to="/" class="flex items-center">
+      <div class="container mx-auto px-4 py-2 flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-3 md:mb-0">
+          <RouterLink to="/" class="flex items-center justify-center">
             <img src="/logos/montpell2.svg" alt="Logo Parkings Montpellier" class="h-16 mr-2">
             <span class="text-sm text-gray-600">version 1.0</span>
           </RouterLink>
         </div>
-        <div class="flex">
-          <RouterLink to="/" class="px-3 py-2 hover:text-[#ea5b0c] font-bold text-[#004494]">Accueil</RouterLink>
-          <RouterLink to="/about" class="px-3 py-2 hover:text-[#ea5b0c] font-bold text-[#004494]">À propos</RouterLink>
+        <div class="flex flex-wrap justify-center">
+          <RouterLink to="/" class="px-4 py-2 mx-1 mb-2 md:mb-0 hover:text-[#ea5b0c] font-bold text-[#004494]">Accueil</RouterLink>
+          <RouterLink to="/about" class="px-4 py-2 mx-1 mb-2 md:mb-0 hover:text-[#ea5b0c] font-bold text-[#004494]">À propos</RouterLink>
           <RouterLink 
             to="/about#soutenez-le-projet" 
-            class="px-3 py-2 hover:text-[#ea5b0c] font-bold text-[#004494]"
+            class="px-4 py-2 mx-1 mb-2 md:mb-0 hover:text-[#ea5b0c] font-bold text-[#004494]"
           >
             Faire un don
           </RouterLink>
@@ -52,7 +52,6 @@ nav {
 
 nav .container {
   width: 100%;
-  font-size: 12px;
   text-align: center;
 }
 
@@ -66,33 +65,28 @@ nav a.router-link-exact-active:hover {
 
 nav a {
   display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
-nav a:first-of-type {
-  border: 0;
+nav a:hover {
+  background-color: rgba(0, 68, 148, 0.05);
 }
 
-@media (min-width: 1024px) {
-  nav {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
+@media (max-width: 768px) {
   nav .container {
-    display: flex;
-    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
   }
+  
+  nav a {
+    text-align: center;
+    min-width: 100px;
+  }
+}
 
+@media (min-width: 768px) {
   nav {
     text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
   }
 }
 </style>
