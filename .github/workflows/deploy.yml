@@ -28,11 +28,13 @@ jobs:
           VITE_PAYPAL_DONATION_URL: ${{ secrets.VITE_PAYPAL_DONATION_URL }}
           VITE_TIPEEE_DONATION_URL: ${{ secrets.VITE_TIPEEE_DONATION_URL }}
           
-      - name: Deploy to Hostinger
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Deploy to Hostinger via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
-          server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
+          server: ${{ secrets.FTP_SERVER }}
+          port: 22  # Port SFTP standard
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: /public_html/
+          local_path: './dist/*'  # Dossier local à déployer
+          remote_path: '/public_html/'  # Dossier distant sur le serveur
+          sftp_only: true  # Utiliser uniquement SFTP
