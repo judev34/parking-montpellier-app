@@ -157,7 +157,7 @@ export const useParkingStore = defineStore('parking', () => {
   function setFilters(newFilters: Partial<typeof filters.value>) {
     filters.value = { ...filters.value, ...newFilters };
     // Sauvegarder la recherche si elle est modifiée
-    if ('searchQuery' in newFilters) {
+    if ('searchQuery' in newFilters && newFilters.searchQuery !== undefined) {
       saveSearchQuery(newFilters.searchQuery);
     }
   }

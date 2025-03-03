@@ -45,6 +45,7 @@ export interface Parking {
   // Informations supplémentaires
   maxHeight?: { type: string; value: number };
   levelNumber?: { type: string; value: number };
+  description?: ParkingValue<string>; // Ajout de la propriété description
 }
 
 export interface ParkingHistoryPoint {

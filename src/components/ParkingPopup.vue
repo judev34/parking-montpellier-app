@@ -38,7 +38,7 @@ function goToDetails() {
   <div class="w-64 rounded-lg overflow-hidden shadow-lg bg-white">
     <!-- En-tête avec nom et statut -->
     <div class="p-3 bg-gray-50 border-b flex justify-between items-center">
-      <h3 class="font-semibold text-gray-800 truncate">{{ parking.name.value }}</h3>
+      <h3 class="font-semibold text-gray-800 truncate">{{ parking.name?.value || 'Parking sans nom' }}</h3>
       <span :class="[statusColor, 'inline-block w-3 h-3 rounded-full']"></span>
     </div>
     

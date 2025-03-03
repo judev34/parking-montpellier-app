@@ -251,7 +251,7 @@ const chartOptions = computed(() => {
     plugins: {
       legend: {
         display: true,
-        position: 'top'
+        position: 'top' as const
       },
       tooltip: {
         callbacks: {
