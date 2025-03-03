@@ -1,94 +1,110 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import DonateButton from './DonateButton.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import config from '@/config/env';
 
-// Props pour personnaliser la bannière
-const props = defineProps({
-  paypalEmail: {
-    type: String,
-    default: 'votre-email@exemple.com' // Remplacer par votre email PayPal
-  },
-  showProbability: {
-    type: Number,
-    default: 0.3 // 30% de chance d'afficher la bannière
-  },
-  cookieExpiration: {
-    type: Number,
-    default: 7 // Nombre de jours avant de réafficher la bannière après fermeture
+// Lien de donation PayPal depuis la configuration
+const paypalDonationUrl = config.paypalDonationUrl;
+
+// Lien de donation Tipeee depuis la configuration
+const tipeeDonationUrl = config.tipeeDonationUrl;
+
+// Définir la date d'affichage minimale
+const minDisplayDate = ref(new Date());
+
+// État pour contrôler l'affichage
+const isVisible = ref(false);
+
+// Lors du montage du composant
+onMounted(() => {
+  // Récupérer la date de la dernière fermeture
+  const lastCloseDate = localStorage.getItem('donate_banner_closed_at');
+  
+  // Si la bannière n'a jamais été fermée, l'afficher
+  if (!lastCloseDate) {
+    isVisible.value = true;
+    return;
+  }
+  
+  // Convertir la date de dernière fermeture en objet Date
+  const lastCloseDateObj = new Date(lastCloseDate);
+  
+  // Calculer le délai depuis la dernière fermeture (en jours)
+  const daysSinceLastClose = Math.floor((Date.now() - lastCloseDateObj.getTime()) / (1000 * 60 * 60 * 24));
+  
+  // Si plus de 30 jours se sont écoulés depuis la dernière fermeture, afficher la bannière
+  if (daysSinceLastClose >= 30) {
+    isVisible.value = true;
   }
 });
 
-// État local pour gérer l'affichage de la bannière
-const isVisible = ref(false);
-
-// Fermer la bannière et enregistrer dans un cookie
+// Méthode pour fermer la bannière
 const closeBanner = () => {
   isVisible.value = false;
   
-  // Enregistrer la date de fermeture dans un cookie
-  const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() + props.cookieExpiration);
-  document.cookie = `donateBannerClosed=true; expires=${expirationDate.toUTCString()}; path=/`;
+  // Stocker la date de fermeture
+  localStorage.setItem('donate_banner_closed_at', new Date().toISOString());
 };
-
-// Vérifier si la bannière doit être affichée
-onMounted(() => {
-  // Vérifier si le cookie existe
-  const hasCookie = document.cookie.split(';').some(item => item.trim().startsWith('donateBannerClosed='));
-  
-  // Si le cookie n'existe pas, afficher la bannière avec la probabilité définie
-  if (!hasCookie && Math.random() < props.showProbability) {
-    // Délai pour ne pas afficher immédiatement au chargement de la page
-    setTimeout(() => {
-      isVisible.value = true;
-    }, 2000);
-  }
-});
 </script>
 
 <template>
-  <transition name="slide-down">
-    <div v-if="isVisible" class="fixed top-0 inset-x-0 z-50">
-      <div class="bg-white shadow-md border-b border-gray-200 p-4">
-        <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between">
-          <div class="mb-4 sm:mb-0 sm:mr-6 flex-grow">
-            <p class="text-sm sm:text-base">
-              <span class="font-semibold" style="color: var(--metro-blue);">Vous aimez cette application ?</span> 
-              Aidez-nous à maintenir ce service gratuit en faisant un don. Chaque contribution compte !
-            </p>
+  <div v-if="isVisible" class="relative bg-gray-100 border-b border-gray-200 py-4">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0 md:mr-8">
+          <div class="text-lg font-semibold text-gray-800">
+            Soutenez l'application Parkings Montpellier
+          </div>
+          <div class="text-gray-600 text-sm">
+            Cette application est gratuite et sans publicités. Votre soutien nous aide à maintenir et améliorer ce service.
           </div>
           
-          <div class="flex items-center">
-            <DonateButton 
-              :paypal-email="paypalEmail" 
-              button-text="Soutenir"
-              :amounts="[3, 5, 10]"
-            />
-            
-            <button 
-              @click="closeBanner" 
-              class="ml-4 text-gray-400 hover:text-gray-600"
-              aria-label="Fermer"
+          <div class="flex mt-2 space-x-2">
+            <a 
+              :href="paypalDonationUrl" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
             >
-              <FontAwesomeIcon :icon="['fas', 'xmark']" />
-            </button>
+              <FontAwesomeIcon :icon="['fab', 'paypal']" class="mr-2" />
+              PayPal
+            </a>
+            <a 
+              :href="tipeeDonationUrl" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="bg-[#EC1651] hover:bg-[#d01447] text-white px-4 py-2 rounded-md flex items-center"
+            >
+              <img src="/icons/tipeee.svg" alt="Tipeee" class="h-4 mr-2" />
+              Tipeee
+            </a>
           </div>
+        </div>
+        
+        <div class="flex items-center">
+          <button 
+            @click="closeBanner" 
+            class="ml-4 text-gray-400 hover:text-gray-600"
+            aria-label="Fermer"
+          >
+            <FontAwesomeIcon :icon="['fas', 'xmark']" />
+          </button>
         </div>
       </div>
     </div>
-  </transition>
+  </div>
 </template>
 
 <style scoped>
-.slide-down-enter-active,
-.slide-down-leave-active {
-  transition: transform 0.5s ease, opacity 0.5s ease;
+/* Animation d'entrée/sortie */
+.banner-enter-active,
+.banner-leave-active {
+  transition: opacity 0.5s, transform 0.5s;
 }
 
-.slide-down-enter-from,
-.slide-down-leave-to {
-  transform: translateY(-100%);
+.banner-enter-from,
+.banner-leave-to {
   opacity: 0;
+  transform: translateY(-20px);
 }
 </style>

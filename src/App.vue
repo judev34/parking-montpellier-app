@@ -2,35 +2,33 @@
 import { RouterView, RouterLink } from 'vue-router';
 import AppFooter from '@/components/AppFooter.vue';
 import DonateBanner from '@/components/DonateBanner.vue';
-import DonateButton from '@/components/DonateButton.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { ref } from 'vue';
+import config from '@/config/env';
 
-// Configurer l'email PayPal pour les dons
-const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayPal
-
-// État pour contrôler l'affichage modal
-const showDonateModal = ref(false);
+// Lien de donation PayPal depuis la configuration
+const paypalDonationUrl = config.paypalDonationUrl;
+const tipeeDonationUrl = config.tipeeDonationUrl;
 </script>
 
 <template>
   <div class="min-h-screen flex flex-col">
     <!-- Bannière de don occasionnelle -->
-    <DonateBanner :paypal-email="paypalEmail" />
+    <DonateBanner />
     
     <nav class="bg-white text-gray-800 shadow-md">
       <div class="container mx-auto px-2 flex justify-between items-center">
         <div class="flex items-center">
-          <img src="/logos/metro_largeur_RVB.jpg" alt="Logo Montpellier Méditerranée Métropole" class="h-14 mr-4">
-          <h1 class="text-xl font-bold" style="color: var(--metro-blue);">Parkings</h1>
+          <img src="/logos/montpell2.svg" alt="Logo Parkings Montpellier" class="h-16 mr-4">
         </div>
         <div class="flex">
-          <RouterLink to="/" class="hover:text-metro-blue">Accueil</RouterLink>
-          <RouterLink to="/about" class="hover:text-metro-blue">À propos</RouterLink>
-          <a href="#" @click.prevent="showDonateModal = true" class="hover:text-metro-blue flex items-center">
-            <FontAwesomeIcon :icon="['fab', 'paypal']" class="mr-1" />
+          <RouterLink to="/" class="px-3 py-2 hover:text-metro-blue">Accueil</RouterLink>
+          <RouterLink to="/about" class="px-3 py-2 hover:text-metro-blue">À propos</RouterLink>
+          <RouterLink 
+            to="/about#soutenez-le-projet" 
+            class="px-3 py-2 hover:text-metro-blue"
+          >
             Faire un don
-          </a>
+          </RouterLink>
         </div>
       </div>
     </nav>
@@ -40,14 +38,6 @@ const showDonateModal = ref(false);
     </main>
     
     <AppFooter />
-    
-    <!-- Modal de don directement intégré dans App.vue -->
-    <DonateButton 
-      :paypal-email="paypalEmail" 
-      :show-modal="showDonateModal" 
-      @close-modal="showDonateModal = false"
-      hide-button
-    />
   </div>
 </template>
 
@@ -97,18 +87,9 @@ nav a:first-of-type {
     text-align: left;
     margin-left: -1rem;
     font-size: 1rem;
-    padding: 1rem 0;
-  }
-}
 
-/* Couleurs personnalisées pour TailwindCSS */
-.text-metro-blue {
-  color: var(--metro-blue);
-}
-.bg-metro-blue {
-  background-color: var(--metro-blue);
-}
-.hover\:text-metro-blue:hover {
-  color: var(--metro-blue);
+    padding: 1rem 0;
+    margin-top: 1rem;
+  }
 }
 </style>

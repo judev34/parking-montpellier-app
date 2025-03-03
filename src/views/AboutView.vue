@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head';
 import DonateButton from '@/components/DonateButton.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import config from '@/config/env';
+
+// Liens de donation depuis la configuration
+const paypalDonationUrl = config.paypalDonationUrl;
+const tipeeDonationUrl = config.tipeeDonationUrl;
 
 // Configurer l'email PayPal pour les dons
 const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayPal
@@ -62,31 +68,43 @@ useHead({
       </ul>
     </section>
     
-    <section class="mb-8">
+    <section class="mb-8" id="soutenez-le-projet">
       <h2 class="text-2xl font-semibold mb-4" style="color: var(--metro-blue);">Soutenez le projet</h2>
       <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
-        <div class="flex flex-col md:flex-row items-center">
-          <div class="md:w-2/3 mb-6 md:mb-0 md:pr-6">
-            <h3 class="text-xl font-semibold mb-3" style="color: var(--metro-blue);">Pourquoi faire un don ?</h3>
-            <p class="mb-3">
-              Cette application est entièrement gratuite et sans publicité. Votre soutien nous permet de :
-            </p>
-            <ul class="list-disc pl-5 mb-4">
-              <li class="mb-1">Couvrir les frais d'hébergement et de maintenance</li>
-              <li class="mb-1">Développer de nouvelles fonctionnalités</li>
-              <li class="mb-1">Améliorer l'expérience utilisateur</li>
-              <li class="mb-1">Garantir la pérennité du service</li>
-            </ul>
-            <p class="text-sm text-gray-600">
-              Même un petit don fait une grande différence ! Merci pour votre soutien.
-            </p>
-          </div>
-          <div class="md:w-1/3 flex justify-center">
-            <DonateButton 
-              :paypal-email="paypalEmail" 
-              button-text="Faire un don via PayPal"
-              :amounts="[3, 5, 10]"
-            />
+        <div>
+          <h3 class="text-xl font-semibold mb-3" style="color: var(--metro-blue);">Pourquoi faire un don ?</h3>
+          <p class="mb-3">
+            Cette application est entièrement gratuite et sans publicité. Votre soutien nous permet de :
+          </p>
+          <ul class="list-disc pl-5 mb-4">
+            <li class="mb-1">Couvrir les frais d'hébergement et de maintenance</li>
+            <li class="mb-1">Développer de nouvelles fonctionnalités</li>
+            <li class="mb-1">Améliorer l'expérience utilisateur</li>
+            <li class="mb-1">Garantir la pérennité du service</li>
+          </ul>
+          <p class="text-sm text-gray-600 mb-6">
+            Même un petit don fait une grande différence ! Merci pour votre soutien.
+          </p>
+          
+          <div class="flex flex-wrap items-center">
+            <a 
+              :href="paypalDonationUrl" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="bg-[#0079C1] hover:bg-[#005d96] text-white px-4 py-2 rounded flex items-center mb-3 mr-4"
+            >
+              <FontAwesomeIcon :icon="['fab', 'paypal']" class="mr-2" />
+              Donner via PayPal
+            </a>
+            <a 
+              :href="tipeeDonationUrl" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="bg-[#EC1651] hover:bg-[#d01447] text-white px-4 py-2 rounded flex items-center mb-3"
+            >
+              <img src="/icons/tipeee.svg" alt="Tipeee" class="h-4 w-4 mr-2" />
+              Donner via Tipeee
+            </a>
           </div>
         </div>
       </div>

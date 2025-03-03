@@ -37,6 +37,21 @@ const router = createRouter({
       }
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: 'smooth',
+        top: 80, // Offset pour prendre en compte la barre de navigation
+      };
+    }
+    
+    return { top: 0 };
+  }
 });
 
 // Hook pour mettre à jour les balises canoniques à chaque changement de route

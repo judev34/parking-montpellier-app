@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 import DonateButton from './DonateButton.vue';
+import config from '@/config/env';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-// Configurer l'email PayPal pour les dons
-const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayPal
+// Liens de donation depuis la configuration
+const paypalDonationUrl = config.paypalDonationUrl;
+const tipeeDonationUrl = config.tipeeDonationUrl;
 </script>
 
 <template>
@@ -12,8 +15,7 @@ const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayP
       <div class="flex flex-col md:flex-row justify-between">
         <div class="mb-6 md:mb-0">
           <div class="flex items-center mb-3">
-            <img src="/logos/metro_hauteur_RVB.jpg" alt="Logo Montpellier Méditerranée Métropole" class="h-10 mr-2">
-            <h3 class="text-lg font-semibold" style="color: var(--metro-blue);">Parkings Montpellier</h3>
+            <img src="/logos/montpell2.svg" alt="Logo Parkings Montpellier" class="h-14 mr-2">
           </div>
           <p class="text-gray-600 max-w-md">
             Application de suivi en temps réel des places disponibles dans les parkings de Montpellier. Données fournies par Montpellier Méditerranée Métropole.
@@ -38,7 +40,27 @@ const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayP
             Email: <a href="mailto:contact@votredomaine.com" class="hover:underline" style="color: var(--metro-blue);">contact@votredomaine.com</a>
           </p>
           <div class="mt-4">
-            <DonateButton :paypal-email="paypalEmail" />
+            <h4 class="text-sm font-medium text-gray-700 mb-2">Soutenir le projet :</h4>
+            <div class="flex items-center space-x-3">
+              <a 
+                :href="paypalDonationUrl" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="bg-[#0079C1] hover:bg-[#005d96] text-white px-3 py-2 rounded flex items-center"
+              >
+                <FontAwesomeIcon :icon="['fab', 'paypal']" class="mr-2" />
+                PayPal
+              </a>
+              <a 
+                :href="tipeeDonationUrl" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="bg-[#EC1651] hover:bg-[#d01447] text-white px-3 py-2 rounded flex items-center"
+              >
+                <img src="/icons/tipeee.svg" alt="Tipeee" class="h-4 w-4 mr-2" />
+                Tipeee
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -52,3 +74,7 @@ const paypalEmail = 'votre-email@exemple.com'; // Remplacez par votre email PayP
     </div>
   </footer>
 </template>
+
+<style scoped>
+/* Styles pour le footer */
+</style>
