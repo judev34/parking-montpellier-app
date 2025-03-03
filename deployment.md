@@ -147,3 +147,4 @@ Pour mettre à jour votre application :
 2. Poussez les changements sur GitHub.
 3. Si vous utilisez GitHub Actions, le déploiement se fera automatiquement.
 4. Si vous faites un déploiement manuel, répétez l'étape 4 (Option 1).
+tester
