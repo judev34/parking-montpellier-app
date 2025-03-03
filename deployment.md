@@ -32,7 +32,7 @@ Ce document explique comment déployer l'application Vue.js "Parking Montpellier
    ```bash
    git add .
    git commit -m "Préparation pour le déploiement"
-   git push origin main
+   git push origin master
    ```
 
 ## Étape 3 : Configurer l'hébergement sur Hostinger
@@ -62,7 +62,7 @@ name: Deploy to Hostinger
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-and-deploy:
@@ -73,13 +73,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '22.14.0'
           
       - name: Install dependencies
         run: npm ci
         
       - name: Build
-        run: npm run build
+        run: npm run build-prod
         env:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
           VITE_DOMAIN: ${{ secrets.VITE_DOMAIN }}
