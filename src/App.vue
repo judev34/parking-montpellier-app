@@ -18,14 +18,17 @@ const tipeeDonationUrl = config.tipeeDonationUrl;
     <nav class="bg-white text-gray-800 shadow-md">
       <div class="container mx-auto px-2 flex justify-between items-center">
         <div class="flex items-center">
-          <img src="/logos/montpell2.svg" alt="Logo Parkings Montpellier" class="h-16 mr-4">
+          <RouterLink to="/" class="flex items-center">
+            <img src="/logos/montpell2.svg" alt="Logo Parkings Montpellier" class="h-16 mr-2">
+            <span class="text-sm text-gray-600">version 1.0</span>
+          </RouterLink>
         </div>
         <div class="flex">
-          <RouterLink to="/" class="px-3 py-2 hover:text-metro-blue">Accueil</RouterLink>
-          <RouterLink to="/about" class="px-3 py-2 hover:text-metro-blue">À propos</RouterLink>
+          <RouterLink to="/" class="px-3 py-2 hover:text-[#ea5b0c] font-bold text-[#004494]">Accueil</RouterLink>
+          <RouterLink to="/about" class="px-3 py-2 hover:text-[#ea5b0c] font-bold text-[#004494]">À propos</RouterLink>
           <RouterLink 
             to="/about#soutenez-le-projet" 
-            class="px-3 py-2 hover:text-metro-blue"
+            class="px-3 py-2 hover:text-[#ea5b0c] font-bold text-[#004494]"
           >
             Faire un don
           </RouterLink>
@@ -54,7 +57,7 @@ nav .container {
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-text);
+  color: #ea5b0c;
 }
 
 nav a.router-link-exact-active:hover {
