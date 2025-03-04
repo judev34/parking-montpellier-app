@@ -35,10 +35,10 @@ const tipeeDonationUrl = config.tipeeDonationUrl;
         </div>
         
         <div>
-          <h3 class="text-lg font-semibold mb-3" style="color: var(--metro-blue);">Contact</h3>
+          <!-- <h3 class="text-lg font-semibold mb-3" style="color: var(--metro-blue);">Contact</h3>
           <p class="text-gray-600">
             Email: <a href="mailto:contact@votredomaine.com" class="hover:underline" style="color: var(--metro-blue);">contact@votredomaine.com</a>
-          </p>
+          </p> -->
           <div class="mt-4">
             <h4 class="text-sm font-medium text-gray-700 mb-2">Soutenir le projet :</h4>
             <div class="flex items-center space-x-3">

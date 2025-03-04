@@ -34,17 +34,13 @@ async function getWithCache<T>(url: string): Promise<T> {
   
   // Sinon, nous faisons un nouvel appel API
   try {
-    console.log(`Appel API: ${url}`); // Ajouter un log pour déboguer
+    // console.log(`Appel API: ${url}`); // Ajouter un log pour déboguer
     const response = await axios.get<T>(url);
     
-    // Ajouter un log pour les premières données brutes pour déboguer
-    console.log('Structure de la réponse brute:', typeof response.data);
-    if (Array.isArray(response.data) && response.data.length > 0) {
-      console.log('Premier élément (brut):', response.data[0]);
-    } else if (typeof response.data === 'object' && response.data !== null) {
-      // Si c'est un objet avec une propriété qui contient la liste des parkings
-      console.log('Propriétés de la réponse:', Object.keys(response.data));
-    }
+    // console.log('Structure de la réponse brute:', typeof response.data);
+    // console.log('Premier élément (brut):', response.data[0]);
+    // console.log('Propriétés de la réponse:', Object.keys(response.data));
+    // console.log(`Réponse API reçue pour ${url}`, response.status);
     
     // Mettre à jour le cache
     cache[cacheKey] = {
@@ -52,11 +48,9 @@ async function getWithCache<T>(url: string): Promise<T> {
       timestamp: now
     };
     
-    console.log(`Réponse API reçue pour ${url}`, response.status);
-    
     return response.data;
   } catch (error) {
-    console.error(`Erreur lors de l'appel API: ${url}`, error);
+    // console.error(`Erreur lors de l'appel API: ${url}`, error);
     throw error;
   }
 }
@@ -82,8 +76,8 @@ async function getParkingSpaces(): Promise<ParkingSpace[]> {
           id: item.id || '',
           name: item.name?.value || '',
         };
-        console.log('parkingSpace:', parkingSpace);
-        console.log(item);
+        // console.log('parkingSpace:', parkingSpace);
+        // console.log(item);
         
 
         // Extraire la hauteur maximale si disponible
@@ -108,7 +102,7 @@ async function getParkingSpaces(): Promise<ParkingSpace[]> {
     
     return [];
   } catch (error) {
-    console.error('Erreur lors de la récupération des données parkingspaces:', error);
+    // console.error('Erreur lors de la récupération des données parkingspaces:', error);
     // En cas d'erreur, retourner le cache s'il existe, sinon un tableau vide
     return parkingSpacesCache || [];
   }
@@ -150,7 +144,7 @@ async function enrichParkingsWithSpaceInfo(parkings: Parking[]): Promise<Parking
       return parking;
     });
   } catch (error) {
-    console.error('Erreur lors de l\'enrichissement des parkings:', error);
+    // console.error('Erreur lors de l\'enrichissement des parkings:', error);
     return parkings; // Retourner les parkings non enrichis en cas d'erreur
   }
 }
@@ -162,10 +156,10 @@ export const parkingApi = {
   async getAllParkings(): Promise<Parking[]> {
     const url = `${API_BASE_URL}/offstreetparking?limit=1000`;
     
-    console.log('Tentative de récupération des parkings...');
+    // console.log('Tentative de récupération des parkings...');
     try {
       const parkings = await getWithCache<Parking[]>(url);
-      console.log(`Récupération réussie de ${parkings.length} parkings`);
+      // console.log(`Récupération réussie de ${parkings.length} parkings`);
       
       // Statistiques sur les parkings
       const parkingStats = {
@@ -176,18 +170,18 @@ export const parkingApi = {
         withStatus: parkings.filter(p => p.status?.value !== undefined).length,
         withLocation: parkings.filter(p => p.location?.value?.coordinates !== undefined).length
       };
-      console.log('Statistiques des parkings:', parkingStats);
+      // console.log('Statistiques des parkings:', parkingStats);
       
       // Log détaillé des 5 premiers parkings pour debug
       if (parkings.length > 0) {
-        console.log('Exemple des 5 premiers parkings:', parkings.slice(0, 5).map(parking => ({
-          id: parking.id,
-          name: parking.name?.value,
-          status: parking.status?.value,
-          availableSpots: parking.availableSpotNumber?.value,
-          totalSpots: parking.totalSpotNumber?.value,
-          location: parking.location?.value?.coordinates
-        })));
+        // console.log('Exemple des 5 premiers parkings:', parkings.slice(0, 5).map(parking => ({
+        //   id: parking.id,
+        //   name: parking.name?.value,
+        //   status: parking.status?.value,
+        //   availableSpots: parking.availableSpotNumber?.value,
+        //   totalSpots: parking.totalSpotNumber?.value,
+        //   location: parking.location?.value?.coordinates
+        // })));
       }
       
       // Enrichir les données avec des calculs supplémentaires
@@ -204,7 +198,7 @@ export const parkingApi = {
         };
       });
     } catch (error) {
-      console.error('Erreur lors de la récupération des parkings:', error);
+      // console.error('Erreur lors de la récupération des parkings:', error);
       // Retourner un tableau vide en cas d'erreur pour éviter les crashs
       return [];
     }
@@ -226,21 +220,21 @@ export const parkingApi = {
     // Formater correctement l'ID
     const formattedId = `urn:ngsi-ld:parking:${numericId}`;
     
-    console.log(`ID original: ${parkingId}, ID formaté: ${formattedId}`);
+    // console.log(`ID original: ${parkingId}, ID formaté: ${formattedId}`);
     
     const url = `${API_BASE_URL}/offstreetparking?id=${encodeURIComponent(formattedId)}`;
     
-    console.log(`Tentative de récupération du parking ${formattedId}...`);
+    // console.log(`Tentative de récupération du parking ${formattedId}...`);
     try {
       const parkings = await getWithCache<Parking[]>(url);
       
       if (!parkings || parkings.length === 0) {
-        console.warn(`Aucun parking trouvé avec l'ID ${formattedId}`);
+        // console.warn(`Aucun parking trouvé avec l'ID ${formattedId}`);
         throw new Error(`Aucun parking trouvé avec l'ID ${formattedId}`);
       }
       
       const parking = parkings[0];
-      console.log(`Parking récupéré: ${parking.name?.value || 'Sans nom'}`);
+      // console.log(`Parking récupéré: ${parking.name?.value || 'Sans nom'}`);
       
       // Calculer des données supplémentaires
       const available = parking.availableSpotNumber?.value || 0;
@@ -255,7 +249,7 @@ export const parkingApi = {
         remainingSpots: available
       };
     } catch (error) {
-      console.error(`Erreur lors de la récupération du parking ${formattedId}:`, error);
+      // console.error(`Erreur lors de la récupération du parking ${formattedId}:`, error);
       throw error;
     }
   },
@@ -268,7 +262,7 @@ export const parkingApi = {
    */
   async getParkingHistory(parkingId: string, options = { interval: 'hour', period: 'week' }): Promise<ParkingTimeSeriesResponse> {
     try {
-      console.log(`Récupération de l'historique pour le parking ${parkingId} (${options.period}, ${options.interval})`);
+      // console.log(`Récupération de l'historique pour le parking ${parkingId} (${options.period}, ${options.interval})`);
       
       // Déterminer les dates de début et de fin en fonction de la période demandée
       const now = new Date();
@@ -302,7 +296,7 @@ export const parkingApi = {
       // URL de l'API pour récupérer les données d'historique
       const url = `${API_BASE_URL}/parking_timeseries/${urnId}/attrs/availableSpotNumber?fromDate=${fromDate}&toDate=${toDate}`;
       
-      console.log(`URL de l'API: ${url}`);
+      // console.log(`URL de l'API: ${url}`);
       
       let data: ParkingTimeSeriesResponse = { 
         attrName: 'availableSpotNumber',
@@ -314,7 +308,7 @@ export const parkingApi = {
       try {
         // Essayer de récupérer les données depuis l'API
         const response = await axios.get(url);
-        console.log("Réponse de l'API reçue", response.status);
+        // console.log("Réponse de l'API reçue", response.status);
         
         // Vérifier que la réponse contient des données
         if (response.data) {
@@ -338,8 +332,8 @@ export const parkingApi = {
           }
         }
       } catch (error) {
-        console.warn(`Erreur lors de la récupération des données depuis l'API: ${error}`);
-        console.log('Génération de données simulées pour permettre à l\'application de fonctionner...');
+        // console.warn(`Erreur lors de la récupération des données depuis l'API: ${error}`);
+        // console.log('Génération de données simulées pour permettre à l\'application de fonctionner...');
         
         // Si l'API timeseries n'est pas disponible, générer des données simulées
         data = this.generateMockHistoryData();
@@ -347,7 +341,7 @@ export const parkingApi = {
       
       return data;
     } catch (error) {
-      console.error(`Erreur lors de la récupération de l'historique du parking ${parkingId}:`, error);
+      // console.error(`Erreur lors de la récupération de l'historique du parking ${parkingId}:`, error);
       // En cas d'erreur, retourner des données simulées pour éviter que l'application ne plante
       return this.generateMockHistoryData();
     }
@@ -372,7 +366,7 @@ export const parkingApi = {
       values.push(availableSpots);
     }
     
-    console.log("Données d'historique simulées générées en remplacement des données API");
+    // console.log("Données d'historique simulées générées en remplacement des données API");
     
     return {
       attrName: 'availableSpotNumber',
@@ -447,7 +441,7 @@ export const parkingApi = {
       }
     }
     
-    console.log(`Données d'historique simulées générées pour ${days} jours (${index.length} points de données)`);
+    // console.log(`Données d'historique simulées générées pour ${days} jours (${index.length} points de données)`);
     
     return {
       attrName: 'availableSpotNumber',

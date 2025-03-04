@@ -94,15 +94,15 @@ export const useParkingStore = defineStore('parking', () => {
       loading.value = true;
       error.value = null;
       
-      console.log('Store: Démarrage de la récupération de tous les parkings');
+      // console.log('Store: Démarrage de la récupération de tous les parkings');
       parkings.value = await parkingApi.getAllParkings();
       
       if (parkings.value.length === 0) {
         // Si l'API retourne un tableau vide, considérer cela comme une erreur
         error.value = "Aucune donnée de parking n'a été trouvée. Vérifiez votre connexion ou réessayez plus tard.";
-        console.warn('Store: Aucun parking récupéré');
+        // console.log('Store: Aucun parking récupéré');
       } else {
-        console.log(`Store: ${parkings.value.length} parkings récupérés avec succès`);
+        // console.log(`Store: ${parkings.value.length} parkings récupérés avec succès`);
         lastUpdated.value = new Date();
       }
     } catch (err) {
@@ -120,7 +120,7 @@ export const useParkingStore = defineStore('parking', () => {
       error.value = null;
       selectedParking.value = await parkingApi.getParkingById(parkingId);
       
-      console.log(`Récupération des détails du parking ${parkingId} réussie`);
+      // console.log(`Récupération des détails du parking ${parkingId} réussie`);
       
       // Activer la récupération de l'historique
       try {
@@ -142,9 +142,9 @@ export const useParkingStore = defineStore('parking', () => {
    */
   async function fetchParkingHistory(parkingId: string, options = { interval: 'hour', period: 'week' }) {
     try {
-      console.log(`Récupération de l'historique pour le parking ${parkingId}`);
+      // console.log(`Récupération de l'historique pour le parking ${parkingId}`);
       parkingHistory.value = await parkingApi.getParkingHistory(parkingId, options);
-      console.log(`Historique récupéré avec ${parkingHistory.value?.index?.length || 0} points de données`);
+      // console.log(`Historique récupéré avec ${parkingHistory.value?.index?.length || 0} points de données`);
       return parkingHistory.value;
     } catch (err) {
       console.error("Erreur lors de la récupération de l'historique", err);
@@ -168,7 +168,7 @@ export const useParkingStore = defineStore('parking', () => {
   
   // Mettre à jour la position de l'utilisateur et recalculer les distances
   function updateDistances(latitude: number, longitude: number) {
-    console.log('Mise à jour des distances avec position:', latitude, longitude);
+    // console.log('Mise à jour des distances avec position:', latitude, longitude);
     filters.value.userLocation = {
       lat: latitude,
       lng: longitude

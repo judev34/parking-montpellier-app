@@ -63,7 +63,7 @@ async function generateSitemap() {
     
     // Écrire le fichier
     fs.writeFileSync(resolve(__dirname, '../../public/sitemap.xml'), sitemap);
-    console.log(`Sitemap généré avec ${response.data.length} parkings`);
+    // console.log(`Sitemap généré avec ${response.data.length} parkings`);
   } catch (error) {
     console.error('Erreur lors de la génération du sitemap:', error);
   }

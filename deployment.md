@@ -135,7 +135,7 @@ Pour que votre application Vue Router fonctionne correctement, vous devez config
 
 ## Résolution des problèmes courants
 
-- **Erreur 404 lors de la navigation** : Vérifiez que le fichier `.htaccess` est correctement configuré.
+- **Erreur 404 lors de la navigation** : Vérifiez que le fichier `.htaccess` est correctement configuré .
 - **Problèmes d'API** : Vérifiez que `VITE_API_BASE_URL` pointe vers la bonne URL.
 - **Erreurs CORS** : Assurez-vous que votre API autorise les requêtes depuis votre domaine.
 
