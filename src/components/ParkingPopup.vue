@@ -35,7 +35,7 @@ function goToDetails() {
 </script>
 
 <template>
-  <div class="w-64 rounded-lg overflow-hidden shadow-lg bg-white">
+  <div @click="goToDetails" class="w-64 rounded-lg overflow-hidden shadow-lg bg-white cursor-pointer hover:shadow-xl transition-shadow duration-300">
     <!-- En-tête avec nom et statut -->
     <div class="p-3 bg-gray-50 border-b flex justify-between items-center">
       <h3 class="font-semibold text-gray-800 truncate">{{ parking.name?.value || 'Parking sans nom' }}</h3>
@@ -63,13 +63,10 @@ function goToDetails() {
         </div>
       </div>
       
-      <!-- Bouton pour plus de détails -->
-      <button 
-        @click="goToDetails"
-        class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded transition duration-200"
-      >
-        Voir les détails
-      </button>
+      <!-- La carte est cliquable au lieu d'avoir un bouton -->
+      <!-- <div class="text-center text-xs text-gray-500 mt-1">
+        <span>Cliquez sur la carte pour plus de détails</span>
+      </div> -->
     </div>
   </div>
 </template>

@@ -7,10 +7,38 @@ const props = defineProps<{
   parking: Parking;
 }>();
 
-// Formatage de l'adresse
+// Déterminer l'adresse à afficher (entrée ou coordonnées GPS)
 const formattedAddress = computed(() => {
-  if (!props.parking.location?.value?.coordinates) return 'Adresse non disponible';
-  return `${props.parking.location.value.coordinates[1]}, ${props.parking.location.value.coordinates[0]}`;
+  // Privilégier l'adresse d'entrée si elle existe
+  if (props.parking.details?.entree) {
+    return props.parking.details.entree;
+  }
+  
+  // Sinon utiliser les coordonnées GPS si disponibles
+  if (props.parking.location?.value?.coordinates) {
+    return `${props.parking.location.value.coordinates[1]}, ${props.parking.location.value.coordinates[0]}`;
+  }
+  
+  return 'Adresse non disponible';
+});
+
+// Coordonnées pour les liens de navigation
+const coordinates = computed(() => {
+  if (!props.parking.location?.value?.coordinates) return null;
+  return {
+    latitude: props.parking.location.value.coordinates[1],
+    longitude: props.parking.location.value.coordinates[0]
+  };
+});
+
+// URLs pour les services de navigation
+const mapUrls = computed(() => {
+  if (!coordinates.value) return { google: '#', waze: '#' };
+  
+  return {
+    google: `https://www.google.com/maps/dir/?api=1&destination=${coordinates.value.latitude},${coordinates.value.longitude}`,
+    waze: `https://waze.com/ul?ll=${coordinates.value.latitude},${coordinates.value.longitude}&navigate=yes`
+  };
 });
 
 // Formatage de la date de dernière mise à jour
@@ -39,7 +67,7 @@ const formattedLastUpdate = computed(() => {
       </div>
       
       <!-- Adresse -->
-      <div v-if="parking.location?.value">
+      <div>
         <h3 class="text-sm font-medium text-gray-700">
           <FontAwesomeIcon :icon="['fas', 'map-marker-alt']" class="mr-1" />
           Adresse
@@ -48,21 +76,21 @@ const formattedLastUpdate = computed(() => {
         <div class="flex space-x-2 mt-2">
           <!-- Google Maps -->
           <a 
-            :href="`https://www.google.com/maps/dir/?api=1&destination=${parking.location.value.coordinates[1]},${parking.location.value.coordinates[0]}`" 
+            :href="mapUrls.google" 
             target="_blank" 
             rel="noopener noreferrer" 
             class="inline-block px-3 py-1 rounded-md text-white text-sm"
             style="background-color: var(--metro-blue);"
           >
             <span class="flex items-center">
-              <FontAwesomeIcon :icon="['fab', 'google-plus-g']" class="mr-1" />
+              <FontAwesomeIcon :icon="['fab', 'google']" class="mr-1" />
               Google Maps
             </span>
           </a>
           
           <!-- Waze -->
           <a 
-            :href="`https://waze.com/ul?ll=${parking.location.value.coordinates[1]},${parking.location.value.coordinates[0]}&navigate=yes`" 
+            :href="mapUrls.waze" 
             target="_blank" 
             rel="noopener noreferrer" 
             class="inline-block px-3 py-1 rounded-md text-white text-sm"

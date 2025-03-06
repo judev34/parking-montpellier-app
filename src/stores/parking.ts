@@ -1,7 +1,8 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import type { Parking, ParkingTimeSeriesResponse } from '@/types/parking';
+import type { Parking, ParkingTimeSeriesResponse, ParkingDetails } from '@/types/parking';
 import { parkingApi } from '@/services/api';
+import parkingDetailsData from '@/docs/parkings_details.json';
 
 // Récupérer la recherche sauvegardée dans le localStorage
 const getSavedSearchQuery = (): string => {
@@ -89,20 +90,48 @@ export const useParkingStore = defineStore('parking', () => {
   });
   
   // Actions
+  // Fonction pour enrichir les parkings avec les données supplémentaires
+  function enrichParkingsWithDetails(parkingsList: Parking[]) {
+    // Créer un mapping rapide des détails par ID
+    const detailsMap = new Map<string, ParkingDetails>();
+    
+    (parkingDetailsData.parkings as ParkingDetails[]).forEach(detail => {
+      detailsMap.set(detail.id, detail);
+    });
+    
+    // Enrichir chaque parking avec ses détails s'ils existent
+    return parkingsList.map(parking => {
+      const details = detailsMap.get(parking.id);
+      
+      if (details) {
+        return {
+          ...parking,
+          details,
+          // Certains identifiants peuvent contenir des mots-clés pour identifier les parkings relais
+          isRelais: parking.name?.value.toLowerCase().includes('relais') || 
+                   parking.name?.value.toLowerCase().includes('tram') ||
+                   parking.description?.value.toLowerCase().includes('relais') || false
+        };
+      }
+      
+      return parking;
+    });
+  }
+
   async function fetchAllParkings() {
     try {
       loading.value = true;
       error.value = null;
       
-      // console.log('Store: Démarrage de la récupération de tous les parkings');
-      parkings.value = await parkingApi.getAllParkings();
+      // Récupérer les données de parkings de l'API
+      const rawParkings = await parkingApi.getAllParkings();
       
-      if (parkings.value.length === 0) {
+      if (rawParkings.length === 0) {
         // Si l'API retourne un tableau vide, considérer cela comme une erreur
         error.value = "Aucune donnée de parking n'a été trouvée. Vérifiez votre connexion ou réessayez plus tard.";
-        // console.log('Store: Aucun parking récupéré');
       } else {
-        // console.log(`Store: ${parkings.value.length} parkings récupérés avec succès`);
+        // Enrichir les parkings avec les données supplémentaires
+        parkings.value = enrichParkingsWithDetails(rawParkings);
         lastUpdated.value = new Date();
       }
     } catch (err) {
@@ -118,9 +147,27 @@ export const useParkingStore = defineStore('parking', () => {
     try {
       loading.value = true;
       error.value = null;
-      selectedParking.value = await parkingApi.getParkingById(parkingId);
+      const parking = await parkingApi.getParkingById(parkingId);
       
-      // console.log(`Récupération des détails du parking ${parkingId} réussie`);
+      if (!parking) {
+        error.value = `Impossible de trouver le parking avec l'ID: ${parkingId}`;
+        selectedParking.value = null;
+        return;
+      }
+      
+      // Rechercher les détails supplémentaires pour ce parking
+      const parkingDetails = (parkingDetailsData.parkings as ParkingDetails[]).find(
+        detail => detail.id === parkingId
+      );
+      
+      // Enrichir le parking avec les détails si disponibles
+      selectedParking.value = {
+        ...parking,
+        details: parkingDetails,
+        isRelais: parking.name?.value.toLowerCase().includes('relais') || 
+                 parking.name?.value.toLowerCase().includes('tram') ||
+                 parking.description?.value.toLowerCase().includes('relais') || false
+      };
       
       // Activer la récupération de l'historique
       try {

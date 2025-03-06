@@ -25,6 +25,40 @@ export interface ParkingSpace {
   [key: string]: any; // Pour les autres propriétés que nous pourrions vouloir utiliser plus tard
 }
 
+export interface ParkingDetails {
+  id: string;
+  nom: string;
+  entree: string;
+  horaires: string;
+  services: {
+    pmr: boolean;
+    nb_pmr?: number | string;
+    resaplace: boolean;
+    accompagnement_place: boolean;
+    telepeage: boolean;
+    lavage: boolean;
+    places_famille: boolean;
+    ve: boolean;
+    depot_minute: boolean;
+    parking_velos: boolean;
+  };
+  tarifs: {
+    [key: string]: number | undefined;
+    "30min"?: number;
+    "1h"?: number;
+    "3h"?: number;
+    "24h"?: number;
+    forfait_ptram?: number;
+  };
+  abonnements?: string;
+  acces?: {
+    tramway?: string[];
+    bus?: string[];
+    arret?: string;
+  };
+  telephone?: string;
+}
+
 export interface Parking {
   id: string;
   type: string;
@@ -46,6 +80,9 @@ export interface Parking {
   maxHeight?: { type: string; value: number };
   levelNumber?: { type: string; value: number };
   description?: ParkingValue<string>; // Ajout de la propriété description
+  // Nouvelles données enrichies
+  details?: ParkingDetails;
+  isRelais?: boolean; // Pour identifier les parkings relais
 }
 
 export interface ParkingHistoryPoint {

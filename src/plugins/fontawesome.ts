@@ -15,7 +15,18 @@ import {
   faLayerGroup,
   faClock,
   faSquareParking,
-  faXmark
+  faXmark,
+  faLocationDot,
+  faPhone,
+  faEuroSign,
+  faWheelchair,
+  faBookmark,
+  faCreditCard,
+  faChild,
+  faChargingStation,
+  faBicycle,
+  faBus,
+  faDroplet
 } from '@fortawesome/free-solid-svg-icons';
 
 // Import des icônes brands
@@ -25,6 +36,11 @@ import {
   faWaze,
   faPaypal
 } from '@fortawesome/free-brands-svg-icons';
+
+// Import des icônes regular
+import {
+  faClock as faClockRegular
+} from '@fortawesome/free-regular-svg-icons';
 
 // Ajout des icônes à la bibliothèque
 library.add(
@@ -42,6 +58,20 @@ library.add(
   faClock,
   faSquareParking,
   faXmark,
+  faLocationDot,
+  faPhone,
+  faEuroSign,
+  faWheelchair,
+  faBookmark,
+  faCreditCard,
+  faChild,
+  faChargingStation,
+  faBicycle,
+  faBus,
+  faDroplet,
+  
+  // Regular icons
+  faClockRegular,
   
   // Brand icons
   faGoogle,

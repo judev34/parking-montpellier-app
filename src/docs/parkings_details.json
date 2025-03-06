@@ -1,0 +1,660 @@
+{
+    "parkings": [
+      {
+        "id": "urn:ngsi-ld:parking:006",
+        "nom": "Foch",
+        "entree": "Place Martyrs de la Résistance - 34000 Montpellier",
+        "places": 668,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 9,
+          "resaplace": true,
+          "accompagnement_place": true,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": false,
+          "depot_minute": false,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "30min": 150,
+          "1h": 230,
+          "3h": 680,
+          "24h": 1900
+        },
+        "abonnements": "Disponibles",
+        "acces": {
+          "tramway": ["4"],
+          "bus": ["6", "7"],
+          "arret": "Peyrou Arc de Triomphe"
+        },
+        "telephone": "04 67 66 26 13"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:002",
+        "nom": "Arc de Triomphe",
+        "entree": "1 Rue Foch 34000 Montpellier",
+        "places": 451,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 10,
+          "resaplace": true,
+          "accompagnement_place": true,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": true
+        },
+        "tarifs": {
+          "30min": 150,
+          "1h": 230,
+          "3h": 680,
+          "24h": 1900
+        },
+        "abonnements": "Disponibles",
+        "acces": {
+          "tramway": ["4"],
+          "bus": ["6", "7"],
+          "arret": "Peyrou Arc de Triomphe"
+        },
+        "telephone": "04 67 66 03 85"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:003",
+        "nom": "Comedie",
+        "entree": "18 avenue Frederic Mistral - 34000 Montpellier",
+        "places": 825,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 17,
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": true,
+          "places_famille": true,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "30min": 200,
+          "1h": 380,
+          "3h": 750,
+          "24h": 1970
+        },
+        "abonnements": "Place réservée, travail, résidant, moto résidant, moto travail et véhicules électriques",
+        "acces": {
+          "tramway": ["1", "2"],
+          "arret": "Comédie"
+        },
+        "telephone": "04 67 60 79 97"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:010",
+        "nom": "Pitot",
+        "entree": "8 rue Gouan - 34000 Montpellier",
+        "places": 588,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 10,
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": true,
+          "lavage": false,
+          "places_famille": false,
+          "ve": false,
+          "depot_minute": false,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "30min": 120,
+          "1h": 200,
+          "3h": 600,
+          "24h": 1750
+        },
+        "abonnements": "Disponibles",
+        "acces": {
+          "bus": ["6", "7", "16"],
+          "arret": "Pitot",
+          "acces_pied": "Rue Gouan"
+        },
+        "telephone": "04 67 58 19 66"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:004",
+        "nom": "Corum",
+        "entree": "Allée de la Citadelle - 34000 Montpellier",
+        "places": 490,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 10,
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": true,
+          "ve": false,
+          "depot_minute": false,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "30min": 200,
+          "1h": 380,
+          "3h": 750,
+          "24h": 1970
+        },
+        "abonnements": "Travail, résidant et résidant nuit",
+        "acces": {
+          "tramway": ["1", "2", "4"],
+          "arret": "Corum"
+        },
+        "telephone": "04 67 79 04 59"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:007",
+        "nom": "Gambetta",
+        "entree": "63 Cours Gambetta - 34000 Montpellier",
+        "places": 470,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 10,
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": true,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "30min": 200,
+          "1h": 380,
+          "3h": 750,
+          "24h": 1970
+        },
+        "abonnements": "Travail, résidant et forfait voyageur SNCF",
+        "acces": {
+          "tramway": ["3", "4"],
+          "bus": ["6", "7", "11", "38"],
+          "arret": "Saint-Denis"
+        },
+        "telephone": "04 67 92 72 64"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:009",
+        "nom": "Triangle",
+        "entree": "9 rue du Jeu de Ballon - 34000 Montpellier",
+        "places": 436,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": false,
+          "nb_pmr": 0,
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": true,
+          "lavage": true,
+          "places_famille": false,
+          "ve": false,
+          "depot_minute": false,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "30min": 120,
+          "1h": 240,
+          "3h": 720,
+          "24h": 2620
+        },
+        "abonnements": "Disponibles",
+        "acces": {
+          "bus": ["8"],
+          "navette": ["Aéroport"],
+          "arret": "Hôtel de Ville",
+          "acces_pied": "Galerie Marchande du Triangle dans l’Allée Jules Milhau"
+        },
+        "telephone": "04 67 58 19 66"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:008",
+        "nom": "Gare",
+        "entree": "Rue du Grand Saint-Jean - 34000 Montpellier",
+        "places": 800,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 12,
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": true,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "30min": 210,
+          "1h": 280,
+          "3h": 840,
+          "24h": 1990
+        },
+        "abonnements": "24/24, moto-scooter, véhicules électriques",
+        "acces": {
+          "tramway": ["1", "2", "3", "4"],
+          "bus": ["6", "7", "8", "11", "12"],
+          "arret": "Gare Saint-Roch"
+        },
+        "telephone": "04 67 22 65 65"
+      },
+      {
+        "id": 9,
+        "nom": "Les Arceaux",
+        "entree": "4 Rue Paladilhe 34000 Montpellier",
+        "places": 208,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 5,
+          "resaplace": false,
+          "accompagnement_place": true,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": false,
+          "depot_minute": false,
+          "parking_velos": true
+        },
+        "tarifs": {
+          "30min": 120,
+          "1h": 200,
+          "3h": 600,
+          "24h": 1750
+        },
+        "abonnements": "Disponibles",
+        "acces": {
+          "bus": ["6", "10"],
+          "arret": "Paladilhe"
+        },
+        "telephone": "04 67 52 00 80"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:024",
+        "nom": "Polygone",
+        "entree": "71 Rue des Pertuisanes - 34000 Montpellier",
+        "places": "n/a",
+        "horaires": "n/a",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 20,
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "1h": 220,
+          "3h": 720
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["1"],
+          "arret": "Antigone"
+        },
+        "telephone": "04 28 70 21 00"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:001",
+        "nom": "Antigone",
+        "entree": "286 Boulevard d’Antigone - 34000 Montpellier",
+        "places": 280,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 6,
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": false,
+          "depot_minute": false,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "30min": 170,
+          "1h": 260,
+          "3h": 670,
+          "24h": 1810
+        },
+        "abonnements": "Petit rouleur, travail et résidant",
+        "acces": {
+          "tramway": ["1"],
+          "arret": "Antigone"
+        },
+        "telephone": "04 67 65 20 29"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:005",
+        "nom": "Europa",
+        "entree": "166 Rue de l'Acropole - 34000 Montpellier",
+        "places": 580,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": 10,
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": true,
+          "ve": false,
+          "depot_minute": false,
+          "parking_velos": false
+        },
+        "tarifs": {
+          "30min": 170,
+          "1h": 260,
+          "3h": 670,
+          "24h": 1810
+        },
+        "abonnements": "Petit rouleur, travail, résidant",
+        "acces": {
+          "tramway": ["1", "4"],
+          "bus": ["9", "37", "120"],
+          "arret": "Place de l’Europe"
+        },
+        "telephone": "04 67 10 36 87"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:011",
+        "nom": "Circé Odysseum",
+        "entree": "Rue Georges Méliès - 34000 Montpellier",
+        "places": 1200,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": false
+        },
+        "tarifs": {
+          "forfait_ptram": 490
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["1"],
+          "arret": "n/a"
+        },
+        "telephone": "n/a"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:017",
+        "nom": "Euromédecine",
+        "entree": "Route de Grabels - 34090 Montpellier",
+        "places": 350,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": false
+        },
+        "tarifs": {
+          "forfait_ptram": 490
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["1"],
+          "bus": ["6", "24", "116"],
+          "arret": "n/a"
+        },
+        "telephone": "n/a"
+      },
+      { 
+        "id": "urn:ngsi-ld:parking:013",
+        "nom": "Mosson",
+        "entree": "Route de Lodève - 34080 Montpellier",
+        "places": 450,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": false
+        },
+        "tarifs": {
+          "forfait_ptram": 490
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["1", "3"],
+          "bus": ["25", "34", "40", "42", "117", "301", "302", "303", "305", "308", "381", "485"],
+          "arret": "n/a"
+        },
+        "telephone": "n/a"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:018",
+        "nom": "Occitanie",
+        "entree": "Route de Ganges - 34090 Montpellier",
+        "places": 620,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": true
+        },
+        "tarifs": {
+          "forfait_ptram": 490
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["1"],
+          "bus": ["6", "23", "26", "108", "114", "115", "116"],
+          "arret": "n/a"
+        },
+        "telephone": "n/a"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:014",
+        "nom": "Sabines",
+        "entree": "Avenue du Colonel André Pavelet dit Villars 34070 Montpellier",
+        "places": 350,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": true
+        },
+        "tarifs": {
+          "forfait_ptram": 490
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["2"],
+          "bus": ["17", "18", "La Ronde", "102", "104"],
+          "arret": "n/a"
+        },
+        "telephone": "n/a"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:012",
+        "nom": "Garcia Lorca",
+        "entree": "162 Avenue de Palavas - 34000 Montpellier",
+        "places": 400,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": false,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": false
+        },
+        "tarifs": {
+          "forfait_ptram": 490
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["4"],
+          "bus": ["11", "32"],
+          "arret": "n/a"
+        },
+        "telephone": "n/a"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:016",
+        "nom": "Saint-Jean le Sec",
+        "entree": "Avenue de Librilla - 34430 Saint-Jean-de-Védas",
+        "places": 280,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": false
+        },
+        "tarifs": {
+          "forfait_ptram": 490
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["2"],
+          "bus": ["20", "103", "216", "312"],
+          "arret": "n/a"
+        },
+        "telephone": "n/a"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:015",
+        "nom": "Notre-Dame de Sablassou",
+        "entree": "Route de Nîmes - 34170 Castelnau-le-Lez",
+        "places": 350,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": false
+        },
+        "tarifs": {
+          "forfait_ptram": 490
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["2"],
+          "bus": ["21", "27", "29", "31", "37", "101", "11"],
+          "arret": "n/a"
+        },
+        "telephone": "n/a"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:022",
+        "nom": "Charles de Gaulle",
+        "entree": "Place Charles de Gaulle - 34170 Castelnau-le-Lez",
+        "places": 50,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": false,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": false,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": true
+        },
+        "tarifs": {
+          "forfait_ptram": 490
+        },
+        "abonnements": "n/a",
+        "acces": {
+          "tramway": ["2"],
+          "bus": ["35", "36", "41", "La Ronde"],
+          "arret": "n/a"
+        },
+        "telephone": "n/a"
+      }
+    ]
+}
