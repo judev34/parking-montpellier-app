@@ -24,6 +24,7 @@ const statusColor = computed(() => {
 
 const statusText = computed(() => {
   if (props.parking.status?.value === 'Closed') return 'Fermé';
+  if (occupancyPercentage.value === 100) return 'Complet';
   if (occupancyPercentage.value > 90) return 'Presque complet';
   if (occupancyPercentage.value > 70) return 'Assez occupé';
   return 'Disponible';
@@ -100,9 +101,6 @@ const distance = computed(() => {
       <div class="mt-2 flex items-center">
         <span :class="[statusColor, 'inline-block w-3 h-3 rounded-full mr-2']"></span>
         <span class="text-sm font-medium">{{ statusText }}</span>
-        <span v-if="parkingStatus && parkingStatus !== 'Open'" class="ml-2 px-2 py-0.5 bg-red-100 text-red-800 text-xs rounded">
-          {{ parkingStatus }}
-        </span>
       </div>
 
       <div class="mt-3">
