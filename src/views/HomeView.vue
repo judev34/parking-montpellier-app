@@ -5,6 +5,7 @@ import { useParkingStore } from '@/stores/parking';
 import ParkingMap from '@/components/ParkingMap.vue';
 import ParkingList from '@/components/ParkingList.vue';
 import ParkingFilters from '@/components/ParkingFilters.vue';
+import ParkingSorter from '@/components/ParkingSorter.vue';
 import { useHead } from '@vueuse/head';
 
 // Configuration des méta-tags pour l'amélioration du SEO
@@ -88,7 +89,6 @@ const refreshData = async () => {
 <template>
   <main class="container mx-auto px-4 py-8">
     <div class="mb-6">
-      <h1 class="text-2xl font-bold mb-2" style="color: var(--metro-blue);">Parkings de Montpellier</h1>
       <p class="text-gray-600">
         Consultez en temps réel la disponibilité des places dans les parkings de Montpellier.
       </p>
@@ -171,26 +171,30 @@ const refreshData = async () => {
       <p>{{ error }}</p>
     </div>
     
-    <!-- Barre de recherche -->
+    <!-- Barre de recherche et tri -->
     <div class="mb-4 relative">
-      <div class="relative">
-        <input 
-          type="search" 
-          v-model="searchInput" 
-          @input="handleSearch" 
-          class="w-full p-2 pl-10 border border-gray-300 text-sm text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50"
-          style="--focus-ring-color: var(--metro-blue);"
-          placeholder="Rechercher un parking par nom..."
-        >
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          class="h-5 w-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-500" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
+      <div class="flex gap-2">
+        <div class="relative flex-grow">
+          <input 
+            type="search" 
+            v-model="searchInput" 
+            @input="handleSearch" 
+            class="w-full p-2 pl-10 border border-gray-300 text-sm text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50"
+            style="--focus-ring-color: var(--metro-blue);"
+            placeholder="Rechercher un parking par nom..."
+          >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            class="h-5 w-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-500" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <!-- Composant de tri -->
+        <ParkingSorter />
       </div>
       <div v-if="filters.searchQuery" class="mt-1 text-sm text-gray-500">
         Résultats pour "{{ filters.searchQuery }}" : {{ sortedParkings.length }} parking(s) trouvé(s)

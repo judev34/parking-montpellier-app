@@ -31,11 +31,24 @@ export const useParkingStore = defineStore('parking', () => {
   const error = ref<string | null>(null);
   const lastUpdated = ref<Date | null>(null);
   const filters = ref({
-    availability: 0, // % minimum de places disponibles
-    maxDistance: 0, // distance maximum en mètres (0 = pas de limite)
     userLocation: null as { lat: number; lng: number } | null, // Position de l'utilisateur
     searchQuery: getSavedSearchQuery(), // Initialiser avec la valeur sauvegardée
+    selectedServices: [] as string[], // Services sélectionnés pour le filtrage
+    sortOption: 'default', // Option de tri par défaut
   });
+
+  // Liste des services disponibles avec leurs couleurs
+  const availableServices = {
+    pmr: { label: 'Accès PMR', color: '#1E88E5' }, // Bleu
+    resaplace: { label: 'Réservation', color: '#43A047' }, // Vert
+    // accompagnement_place: { label: 'Accompagnement', color: '#FB8C00' }, // Orange
+    // telepeage: { label: 'Télépéage', color: '#E53935' }, // Rouge
+    lavage: { label: 'Lavage', color: '#8E24AA' }, // Violet
+    places_famille: { label: 'Places famille', color: '#3949AB' }, // Indigo
+    ve: { label: 'Recharge VE', color: '#00ACC1' }, // Cyan
+    depot_minute: { label: 'Dépôt minute', color: '#F4511E' }, // Orange foncé
+    parking_velos: { label: 'Velopark', color: '#6D4C41' } // Marron
+  };
 
   // Getters
   const sortedParkings = computed(() => {
@@ -50,14 +63,13 @@ export const useParkingStore = defineStore('parking', () => {
       });
     }
     
-    // Filtrer par disponibilité
-    if (filters.value.availability > 0) {
+    // Filtrer par services sélectionnés
+    if (filters.value.selectedServices.length > 0) {
       result = result.filter(p => {
-        const available = p.availableSpotNumber?.value || 0;
-        const total = p.totalSpotNumber?.value || 0;
-        if (total === 0) return false;
-        const availPercentage = (available / total) * 100;
-        return availPercentage >= filters.value.availability;
+        // Vérifier si le parking a tous les services sélectionnés
+        return filters.value.selectedServices.every(service => {
+          return p.details?.services && p.details.services[service as keyof typeof p.details.services] === true;
+        });
       });
     }
     
@@ -74,16 +86,45 @@ export const useParkingStore = defineStore('parking', () => {
         return { ...p, distance };
       });
       
-      // Appliquer le filtre de distance maximum si défini
-      if (filters.value.maxDistance > 0) {
-        result = result.filter(p => (p as any).distance <= filters.value.maxDistance);
+      // Trier par distance si aucune autre option de tri n'est sélectionnée
+      if (filters.value.sortOption === 'default') {
+        result.sort((a, b) => (a as any).distance - (b as any).distance);
       }
-      
-      // Trier par distance
-      result.sort((a, b) => (a as any).distance - (b as any).distance);
-    } else {
-      // Sinon, trier par disponibilité (plus de places disponibles en premier)
+    } else if (filters.value.sortOption === 'default') {
+      // Sinon, trier par disponibilité (plus de places disponibles en premier) par défaut
       result.sort((a, b) => (b.availableSpotNumber?.value || 0) - (a.availableSpotNumber?.value || 0));
+    }
+    
+    // Appliquer les tris spécifiques quelle que soit la position de l'utilisateur
+    switch (filters.value.sortOption) {
+      case 'availability-asc':
+        // Trier par pourcentage de disponibilité croissant
+        result.sort((a, b) => {
+          const aAvail = a.availableSpotNumber?.value || 0;
+          const aTotal = a.totalSpotNumber?.value || 1;
+          const bAvail = b.availableSpotNumber?.value || 0;
+          const bTotal = b.totalSpotNumber?.value || 1;
+          return (aAvail / aTotal) - (bAvail / bTotal);
+        });
+        break;
+      case 'availability-desc':
+        // Trier par pourcentage de disponibilité décroissant
+        result.sort((a, b) => {
+          const aAvail = a.availableSpotNumber?.value || 0;
+          const aTotal = a.totalSpotNumber?.value || 1;
+          const bAvail = b.availableSpotNumber?.value || 0;
+          const bTotal = b.totalSpotNumber?.value || 1;
+          return (bAvail / bTotal) - (aAvail / aTotal);
+        });
+        break;
+      case 'capacity-asc':
+        // Trier par capacité totale croissante
+        result.sort((a, b) => (a.totalSpotNumber?.value || 0) - (b.totalSpotNumber?.value || 0));
+        break;
+      case 'capacity-desc':
+        // Trier par capacité totale décroissante
+        result.sort((a, b) => (b.totalSpotNumber?.value || 0) - (a.totalSpotNumber?.value || 0));
+        break;
     }
     
     return result;
@@ -258,6 +299,28 @@ export const useParkingStore = defineStore('parking', () => {
     }
   }
 
+  // Méthode pour basculer un service dans les filtres
+  function toggleServiceFilter(serviceId: string) {
+    const index = filters.value.selectedServices.indexOf(serviceId);
+    if (index === -1) {
+      // Ajouter le service s'il n'est pas déjà sélectionné
+      filters.value.selectedServices.push(serviceId);
+    } else {
+      // Retirer le service s'il est déjà sélectionné
+      filters.value.selectedServices.splice(index, 1);
+    }
+  }
+
+  // Méthode pour réinitialiser les filtres de services
+  function resetServiceFilters() {
+    filters.value.selectedServices = [];
+  }
+  
+  // Méthode pour définir l'option de tri
+  function setSortOption(option: string) {
+    filters.value.sortOption = option;
+  }
+
   return {
     parkings,
     selectedParking,
@@ -267,12 +330,16 @@ export const useParkingStore = defineStore('parking', () => {
     lastUpdated,
     filters,
     sortedParkings,
+    availableServices,
     fetchAllParkings,
     fetchParkingDetails,
     fetchParkingHistory,
     setFilters,
     refreshData,
     updateDistances,
+    toggleServiceFilter,
+    resetServiceFilters,
+    setSortOption,
     startAutoRefresh,
     stopAutoRefresh
   };

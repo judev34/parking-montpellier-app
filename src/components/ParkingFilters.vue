@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useParkingStore } from '@/stores/parking';
 
 const parkingStore = useParkingStore();
-const { filters, sortedParkings } = storeToRefs(parkingStore);
+const { sortedParkings, filters } = storeToRefs(parkingStore);
+const { availableServices, toggleServiceFilter, resetServiceFilters } = parkingStore;
 
-const availabilityFilter = ref(filters.value.availability);
-const maxDistanceFilter = ref(filters.value.maxDistance);
 const showFilters = ref(false); // Filtres cachés par défaut
 
 // Fonction pour afficher/masquer les filtres
@@ -15,36 +14,27 @@ function toggleFilters() {
   showFilters.value = !showFilters.value;
 }
 
-// Appliquer les filtres après un court délai pour éviter trop d'appels lors des ajustements slider
-let applyTimeout: NodeJS.Timeout | null = null;
-
-function applyFilters() {
-  if (applyTimeout) clearTimeout(applyTimeout);
-  applyTimeout = setTimeout(() => {
-    parkingStore.setFilters({
-      availability: availabilityFilter.value,
-      maxDistance: maxDistanceFilter.value
-    });
-  }, 300);
+// Fonction pour basculer un service dans les filtres
+function toggleService(serviceId: string) {
+  toggleServiceFilter(serviceId);
 }
 
-watch([availabilityFilter, maxDistanceFilter], () => {
-  applyFilters();
-});
-
+// Fonction pour réinitialiser les filtres
 function resetFilters() {
-  availabilityFilter.value = 0;
-  maxDistanceFilter.value = 0;
-  parkingStore.setFilters({
-    availability: 0,
-    maxDistance: 0
-  });
+  resetServiceFilters();
 }
 
-const showDistanceFilter = ref(!!filters.value.userLocation);
+// Vérifier si un service est sélectionné
+const isServiceSelected = (serviceId: string) => {
+  return filters.value.selectedServices.includes(serviceId);
+};
 
-watch(() => filters.value.userLocation, (newValue) => {
-  showDistanceFilter.value = !!newValue;
+// Convertir l'objet des services en tableau pour l'itération dans le template
+const servicesArray = computed(() => {
+  return Object.entries(availableServices).map(([id, service]) => ({
+    id,
+    ...service
+  }));
 });
 </script>
 
@@ -67,48 +57,39 @@ watch(() => filters.value.userLocation, (newValue) => {
     
     <div v-if="showFilters" class="bg-white rounded-lg shadow-sm p-3 transition-all duration-300 ease-in-out">
       <div class="space-y-3">
-        <!-- Filtre de disponibilité -->
+        <!-- Filtres par services -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Disponibilité minimum: {{ availabilityFilter }}%
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Services disponibles
           </label>
-          <input 
-            type="range" 
-            min="0" 
-            max="100" 
-            step="5"
-            v-model.number="availabilityFilter"
-            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            style="accent-color: var(--metro-blue);"
-          />
-          <div class="flex justify-between text-xs text-gray-500">
-            <span>0%</span>
-            <span>100%</span>
-          </div>
-        </div>
-        
-        <!-- Filtre de distance (affiché seulement si la position utilisateur est disponible) -->
-        <div v-if="showDistanceFilter">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Distance maximum: {{ maxDistanceFilter ? `${maxDistanceFilter/1000} km` : 'Illimitée' }}
-          </label>
-          <input 
-            type="range" 
-            min="0" 
-            max="5000" 
-            step="500"
-            v-model.number="maxDistanceFilter"
-            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            style="accent-color: var(--metro-blue);"
-          />
-          <div class="flex justify-between text-xs text-gray-500">
-            <span>Illimitée</span>
-            <span>5 km</span>
+          <div class="flex flex-wrap gap-2">
+            <button 
+              v-for="service in servicesArray" 
+              :key="service.id"
+              @click="toggleService(service.id)"
+              class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1"
+              :class="{
+                'text-white': isServiceSelected(service.id),
+                'text-gray-700 bg-gray-100 hover:bg-gray-200': !isServiceSelected(service.id)
+              }"
+              :style="{
+                backgroundColor: isServiceSelected(service.id) ? service.color : '',
+                borderColor: service.color,
+                borderWidth: '1px'
+              }"
+            >
+              <span v-if="isServiceSelected(service.id)" class="w-3 h-3 rounded-full bg-white flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-2 h-2" :style="{color: service.color}">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </span>
+              {{ service.label }}
+            </button>
           </div>
         </div>
         
         <!-- Bouton de réinitialisation -->
-        <div class="flex justify-end">
+        <div class="flex justify-end" v-if="filters.selectedServices.length > 0">
           <button 
             @click="resetFilters"
             class="text-sm px-3 py-1 rounded-md"
