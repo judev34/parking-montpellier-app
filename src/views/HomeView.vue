@@ -92,6 +92,9 @@ const refreshData = async () => {
       <p class="text-gray-600">
         Consultez en temps réel la disponibilité des places dans les parkings de Montpellier.
       </p>
+      <p class="text-xs text-red-500 mt-1">
+        Note : Cette liste n'est pas exhaustive et certaines données peuvent encore manquer. Des mises à jour régulières sont prévues.
+      </p>
     </div>
     
     <!-- Filtres -->
