@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useParkingStore } from '@/stores/parking';
 import ParkingMap from '@/components/ParkingMap.vue';
-import ParkingCard from '@/components/ParkingCard.vue';
+import ParkingList from '@/components/ParkingList.vue';
 import ParkingFilters from '@/components/ParkingFilters.vue';
 import { useHead } from '@vueuse/head';
 
@@ -45,7 +45,6 @@ const { sortedParkings, loading, error, lastUpdated, filters } = storeToRefs(par
 // État local
 const view = ref<'map' | 'list'>('list'); // Changer la vue par défaut à 'list'
 const searchInput = ref(filters.value.searchQuery); // Initialiser avec la valeur du store
-const formattedLastUpdate = ref('');
 
 // Debounce pour la recherche
 let searchTimeout: number | null = null;
@@ -75,18 +74,6 @@ onUnmounted(() => {
   parkingStore.stopAutoRefresh();
 });
 
-// Formater la date de dernière mise à jour
-const updateLastUpdateTime = () => {
-  if (lastUpdated.value) {
-    formattedLastUpdate.value = new Date(lastUpdated.value).toLocaleString('fr-FR');
-  }
-};
-
-// Observer les changements de lastUpdated
-watch(lastUpdated, () => {
-  updateLastUpdateTime();
-});
-
 // Observer les changements de filtres pour mettre à jour le champ de recherche
 watch(() => filters.value.searchQuery, (newQuery) => {
   searchInput.value = newQuery;
@@ -95,7 +82,6 @@ watch(() => filters.value.searchQuery, (newQuery) => {
 // Rafraîchir manuellement les données
 const refreshData = async () => {
   await parkingStore.refreshData();
-  updateLastUpdateTime();
 };
 </script>
 
@@ -178,16 +164,7 @@ const refreshData = async () => {
     </div>
     
     <!-- Dernière mise à jour -->
-    <div class="text-sm text-gray-500 mb-4" v-if="lastUpdated">
-      <span>Dernière mise à jour : {{ formattedLastUpdate }}</span>
-      <button 
-        @click="refreshData" 
-        class="ml-2 px-2 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-        :disabled="loading"
-      >
-        <span>🔄</span> 
-      </button>
-    </div>
+    
     
     <!-- Message d'erreur -->
     <div v-if="error" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
@@ -202,7 +179,7 @@ const refreshData = async () => {
           v-model="searchInput" 
           @input="handleSearch" 
           class="w-full p-2 pl-10 border border-gray-300 text-sm text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50"
-          style="focus:ring-color: var(--metro-blue);"
+          style="--focus-ring-color: var(--metro-blue);"
           placeholder="Rechercher un parking par nom..."
         >
         <svg 
@@ -226,25 +203,6 @@ const refreshData = async () => {
     </div>
     
     <!-- Vue Liste -->
-    <div v-else>
-      <div v-if="loading && !sortedParkings.length" class="flex justify-center py-12">
-        <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-      </div>
-      
-      <div v-else-if="!sortedParkings.length" class="text-center py-12 text-gray-500">
-        <p>Aucun parking ne correspond aux critères.</p>
-      </div>
-      
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <ParkingCard 
-          v-for="parking in sortedParkings" 
-          :key="parking.id" 
-          :parking="parking" 
-        />
-      </div>
-    </div>
+    <ParkingList v-else />
   </main>
 </template>
