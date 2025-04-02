@@ -259,34 +259,61 @@ export const parkingApi = {
    * Options:
    * - interval: intervalle de temps pour les données (heure, jour, semaine)
    * - period: période de temps à récupérer ("day", "week", "month")
+   * - previousYear: si true, récupère les données de la même période mais de l'année précédente
    */
-  async getParkingHistory(parkingId: string, options = { interval: 'hour', period: 'week' }): Promise<ParkingTimeSeriesResponse> {
+  async getParkingHistory(parkingId: string, options = { interval: 'hour', period: 'week', previousYear: false }): Promise<ParkingTimeSeriesResponse> {
     try {
-      // console.log(`Récupération de l'historique pour le parking ${parkingId} (${options.period}, ${options.interval})`);
+      // Importer dayjs
+      const dayjs = (await import('@/utils/dayjs')).default;
       
-      // Déterminer les dates de début et de fin en fonction de la période demandée
-      const now = new Date();
-      const toDate = now.toISOString();
-      let fromDate: string;
+      // Déterminer les dates de début et de fin en fonction de la période
+      let startDate, endDate;
+      let now = dayjs();
       
-      switch(options.period) {
-        case 'day':
-          const oneDayAgo = new Date(now);
-          oneDayAgo.setDate(now.getDate() - 1);
-          fromDate = oneDayAgo.toISOString();
-          break;
-        case 'month':
-          const oneMonthAgo = new Date(now);
-          oneMonthAgo.setMonth(now.getMonth() - 1);
-          fromDate = oneMonthAgo.toISOString();
-          break;
-        case 'week':
-        default:
-          const oneWeekAgo = new Date(now);
-          oneWeekAgo.setDate(now.getDate() - 7);
-          fromDate = oneWeekAgo.toISOString();
-          break;
+      if (options.previousYear) {
+        // Si on veut les données de l'année précédente
+        const lastYear = now.subtract(1, 'year');
+        
+        switch(options.period) {
+          case 'day':
+            startDate = lastYear.startOf('day').toDate();
+            endDate = lastYear.endOf('day').toDate();
+            break;
+          case 'month':
+            startDate = lastYear.startOf('month').toDate();
+            endDate = lastYear.endOf('month').toDate();
+            break;
+          case 'week':
+          default:
+            // Même semaine que maintenant mais année précédente
+            const weekNumber = now.week();
+            const lastYearSameWeek = lastYear.week(weekNumber);
+            startDate = lastYearSameWeek.startOf('week').toDate();
+            endDate = lastYearSameWeek.endOf('week').toDate();
+            break;
+        }
+      } else {
+        // Dates actuelles
+        switch(options.period) {
+          case 'day':
+            startDate = now.startOf('day').toDate();
+            endDate = now.endOf('day').toDate();
+            break;
+          case 'month':
+            startDate = now.startOf('month').toDate();
+            endDate = now.endOf('month').toDate();
+            break;
+          case 'week':
+          default:
+            startDate = now.startOf('week').toDate();
+            endDate = now.endOf('week').toDate();
+            break;
+        }
       }
+      
+      // Pour l'API, nous avons besoin de dates au format ISO
+      const toDate = endDate.toISOString();
+      const fromDate = startDate.toISOString();  
       
       // Formater l'identifiant du parking au format URN
       const urnId = parkingId.includes('urn:ngsi-ld:parking:') 
