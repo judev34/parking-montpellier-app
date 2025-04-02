@@ -82,7 +82,8 @@ async function getParkingSpaces(): Promise<ParkingSpace[]> {
 
         // Extraire la hauteur maximale si disponible
         if (item.maxHeight?.value) {
-          parkingSpace.maxHeight = parseFloat(item.maxHeight.value);
+          // Convertir de centimètres à mètres (diviser par 100)
+          parkingSpace.maxHeight = parseFloat(item.maxHeight.value) / 100;
         }
         
         // Extraire le nombre d'étages si disponible

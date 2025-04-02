@@ -67,7 +67,9 @@
       {
         "id": "urn:ngsi-ld:parking:003",
         "nom": "Comedie",
-        "entree": "18 avenue Frederic Mistral - 34000 Montpellier",
+        "entree": "18 Avenue Frederic Mistral",
+        "latitude": "43.610006",
+        "longitude": "3.882792",
         "places": 825,
         "horaires": "Ouvert tous les jours, 24h/24",
         "services": {
@@ -93,12 +95,15 @@
           "tramway": ["1", "2"],
           "arret": "Comédie"
         },
-        "telephone": "04 67 60 79 97"
+        "telephone": "04 67 60 79 97",
+        "hauteur": 185
       },
       {
         "id": "urn:ngsi-ld:parking:010",
         "nom": "Pitot",
-        "entree": "8 rue Gouan - 34000 Montpellier",
+        "entree": "7 rue Gouan - 34000 Montpellier",
+        "latitude": "43.612545",
+        "longitude": "3.870998",
         "places": 588,
         "horaires": "Ouvert tous les jours, 24h/24",
         "services": {
@@ -653,6 +658,40 @@
           "tramway": ["2"],
           "bus": ["35", "36", "41", "La Ronde"],
           "arret": "n/a"
+        },
+        "telephone": "n/a"
+      },
+      {
+        "id": "urn:ngsi-ld:parking:023",
+        "nom": "Pitot",
+        "entree": "7 rue du Carr du Roi - 34000 Montpellier",
+        "places": 50,
+        "horaires": "Ouvert tous les jours, 24h/24",
+        "services": {
+          "pmr": true,
+          "nb_pmr": "n/a",
+          "resaplace": true,
+          "accompagnement_place": false,
+          "telepeage": false,
+          "lavage": false,
+          "places_famille": false,
+          "ve": true,
+          "depot_minute": false,
+          "parking_velos": true,
+          "covoiturage": true,
+          "modulauto": true
+        },
+        "tarifs": {
+          "30min": 160,
+          "1h": 250,
+          "4h": 940,
+          "24h": 3110
+        },
+        "abonnements": "Disponible",
+        "acces": {
+          "tramway": ["4"],
+          "bus": [],
+          "arret": "Peyrou Arc de Triomphe"
         },
         "telephone": "n/a"
       }

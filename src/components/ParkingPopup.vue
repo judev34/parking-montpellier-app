@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import type { Parking } from '@/types/parking';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const props = defineProps<{
   parking: Parking;
@@ -17,8 +18,27 @@ const occupancyPercentage = computed(() => {
   return Math.round(100 * (1 - availableSpots.value / totalSpots.value));
 });
 
+// Vérifier si les données sont à jour (moins de 12h)
+const isDataOutdated = computed(() => {
+  const timestamp = props.parking.availableSpotNumber?.metadata?.timestamp?.value;
+  if (!timestamp) return true;
+  
+  const updateDate = new Date(timestamp);
+  // Soustraire 2 heures pour compenser le décalage horaire
+  updateDate.setHours(updateDate.getHours() - 2);
+  
+  const now = new Date();
+  const diffHours = (now.getTime() - updateDate.getTime()) / (1000 * 60 * 60);
+  
+  // Si la dernière mise à jour date de plus de 12 heures
+  return diffHours > 12;
+});
+
 // Déterminer la couleur du statut
 const statusColor = computed(() => {
+  // Si les données sont obsolètes, utiliser une couleur grise
+  if (isDataOutdated.value) return 'bg-gray-500';
+  
   if (props.parking.status?.value === 'closed') return 'bg-gray-500';
   if (totalSpots.value === 0) return 'bg-gray-300';
   
@@ -46,20 +66,25 @@ function goToDetails() {
     <div class="p-3">
       <!-- Disponibilité -->
       <div class="mb-3">
-        <div class="flex justify-between text-sm mb-1">
-          <span class="text-gray-600">Disponibilité:</span>
-          <span class="font-medium">
-            {{ availableSpots }} / {{ totalSpots }} places
-          </span>
+        <div v-if="isDataOutdated" class="text-center py-2 text-red-600 text-sm">
+          Données indisponibles pour l'instant
         </div>
-        
-        <!-- Barre de progression -->
-        <div class="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            class="h-full rounded-full" 
-            :class="statusColor"
-            :style="{ width: `${occupancyPercentage}%` }"
-          ></div>
+        <div v-else>
+          <div class="flex justify-between text-sm mb-1">
+            <span class="text-gray-600">Disponibilité:</span>
+            <span class="font-medium">
+              {{ availableSpots }} / {{ totalSpots }} places
+            </span>
+          </div>
+          
+          <!-- Barre de progression -->
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              class="h-full rounded-full" 
+              :class="statusColor"
+              :style="{ width: `${occupancyPercentage}%` }"
+            ></div>
+          </div>
         </div>
       </div>
       

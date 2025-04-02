@@ -24,11 +24,23 @@ const formattedAddress = computed(() => {
 
 // Coordonnées pour les liens de navigation
 const coordinates = computed(() => {
-  if (!props.parking.location?.value?.coordinates) return null;
-  return {
-    latitude: props.parking.location.value.coordinates[1],
-    longitude: props.parking.location.value.coordinates[0]
-  };
+  // Vérifier d'abord si des coordonnées sont disponibles dans les détails du parking
+  if (props.parking.details?.latitude && props.parking.details?.longitude) {
+    return {
+      latitude: props.parking.details.latitude,
+      longitude: props.parking.details.longitude
+    };
+  }
+  
+  // Sinon, utiliser les coordonnées de l'API si disponibles
+  if (props.parking.location?.value?.coordinates) {
+    return {
+      latitude: props.parking.location.value.coordinates[1],
+      longitude: props.parking.location.value.coordinates[0]
+    };
+  }
+  
+  return null;
 });
 
 // URLs pour les services de navigation
@@ -105,12 +117,19 @@ const formattedLastUpdate = computed(() => {
       </div>
       
       <!-- Hauteur maximale -->
-      <div v-if="parking.maxHeight?.value">
+      <div v-if="parking.maxHeight?.value || parking.details?.hauteur">
         <h3 class="text-sm font-medium text-gray-700">
           <FontAwesomeIcon :icon="['fas', 'ruler-vertical']" class="mr-1" />
           Hauteur maximale
         </h3>
-        <p class="text-gray-600">{{ parking.maxHeight.value }} mètres</p>
+        <p class="text-gray-600">
+          <template v-if="parking.maxHeight?.value">
+            {{ parking.maxHeight.value.toFixed(2) }} mètres
+          </template>
+          <template v-else-if="parking.details?.hauteur">
+            {{ (parking.details.hauteur / 100).toFixed(2) }} mètres
+          </template>
+        </p>
       </div>
       
       <!-- Nombre d'étages -->

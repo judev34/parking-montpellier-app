@@ -29,6 +29,8 @@ export interface ParkingDetails {
   id: string;
   nom: string;
   entree: string;
+  latitude?: string;
+  longitude?: string;
   horaires: string;
   services: {
     pmr: boolean;
@@ -57,6 +59,7 @@ export interface ParkingDetails {
     arret?: string;
   };
   telephone?: string;
+  hauteur?: number;
 }
 
 export interface Parking {
