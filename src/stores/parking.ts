@@ -210,9 +210,9 @@ export const useParkingStore = defineStore('parking', () => {
                  parking.description?.value.toLowerCase().includes('relais') || false
       };
       
-      // Activer la récupération de l'historique
+      // Activer la récupération de l'historique (année précédente)
       try {
-        await fetchParkingHistory(parkingId);
+        await fetchParkingHistory(parkingId, { interval: 'hour', period: 'week', previousYear: true });
       } catch (historyError) {
         console.warn("Erreur lors de la récupération de l'historique", historyError);
         parkingHistory.value = null;
@@ -227,8 +227,13 @@ export const useParkingStore = defineStore('parking', () => {
   
   /**
    * Récupère l'historique des places disponibles pour un parking
+   * @param parkingId - ID du parking
+   * @param options - Options de récupération
+   * @param options.interval - Intervalle de temps (hour, day, week)
+   * @param options.period - Période à récupérer (day, week, month)
+   * @param options.previousYear - Si true, récupère les données de la même période mais de l'année précédente
    */
-  async function fetchParkingHistory(parkingId: string, options = { interval: 'hour', period: 'week' }) {
+  async function fetchParkingHistory(parkingId: string, options = { interval: 'hour', period: 'week', previousYear: false }) {
     try {
       // console.log(`Récupération de l'historique pour le parking ${parkingId}`);
       parkingHistory.value = await parkingApi.getParkingHistory(parkingId, options);

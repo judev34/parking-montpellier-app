@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useParkingStore } from '@/stores/parking';
+import dayjs from '@/utils/dayjs';
+import { formatDate } from '@/utils/dateUtils';
 
 const props = defineProps<{
   parkingId: string;
@@ -23,44 +25,32 @@ const timeSlots = [
 
 // Jours de la semaine
 const weekDays = computed(() => {
-  const now = new Date();
-  const today = now.getDay(); // 0 = dimanche, 1-6 = lundi-dimanche
+  // Utiliser dayjs pour obtenir la semaine dernière
+  const now = dayjs();
   
-  // Trouver la date du lundi de la semaine dernière
-  const mondayLastWeek = new Date(now);
-  mondayLastWeek.setDate(mondayLastWeek.getDate() - 7 - (today === 0 ? 6 : today - 1));
+  // Trouver le lundi de la semaine dernière (année précédente)
+  const lastYear = now.subtract(1, 'year');
+  const weekNumber = now.week();
+  const lastYearSameWeek = lastYear.week(weekNumber);
+  const mondayLastWeek = lastYearSameWeek.startOf('week');
   
   // Générer les dates pour chaque jour
   const days = [];
   for (let i = 0; i < 7; i++) {
-    const date = new Date(mondayLastWeek);
-    date.setDate(date.getDate() + i);
+    const date = mondayLastWeek.add(i, 'day');
+    const dayOfWeek = date.day(); // 0 = dimanche, 1-6 = lundi-samedi
     
-    const dayOfWeek = date.getDay();
-    let label;
-    
-    switch (dayOfWeek) {
-      case 0: label = 'Dimanche'; break;
-      case 1: label = 'Lundi'; break;
-      case 2: label = 'Mardi'; break;
-      case 3: label = 'Mercredi'; break;
-      case 4: label = 'Jeudi'; break;
-      case 5: label = 'Vendredi'; break;
-      case 6: label = 'Samedi'; break;
-      default: label = '';
-    }
+    // Obtenir le nom du jour en français
+    const label = date.format('dddd');
     
     // Formater la date (jour/mois)
-    const formattedDate = date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'numeric'
-    });
+    const formattedDate = date.format('DD/MM');
     
     days.push({
       id: dayOfWeek,
-      label,
+      label: label.charAt(0).toUpperCase() + label.slice(1), // Première lettre en majuscule
       date: formattedDate,
-      fullDate: date
+      fullDate: date.toDate()
     });
   }
   
@@ -77,23 +67,21 @@ const weekDays = computed(() => {
 
 // Dates de la semaine (pour l'affichage)
 const historyDateRange = computed(() => {
-  const now = new Date();
-  const endDate = new Date(now);
-  const startDate = new Date(now);
-  startDate.setDate(startDate.getDate() - 7);
+  const now = dayjs();
   
-  // Formater les dates au format jour/mois/année
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric'
-    });
-  };
+  // Pour l'année précédente (même semaine)
+  const lastYear = now.subtract(1, 'year');
+  const weekNumber = now.week();
+  const lastYearSameWeek = lastYear.week(weekNumber);
+  
+  const startDate = lastYearSameWeek.startOf('week');
+  const endDate = lastYearSameWeek.endOf('week');
   
   return {
-    start: formatDate(startDate),
-    end: formatDate(endDate)
+    start: startDate.format('DD/MM/YYYY'),
+    end: endDate.format('DD/MM/YYYY'),
+    lastYearStart: startDate.format('DD/MM/YYYY'),
+    lastYearEnd: endDate.format('DD/MM/YYYY')
   };
 });
 
@@ -101,7 +89,12 @@ const historyDateRange = computed(() => {
 onMounted(async () => {
   loading.value = true;
   try {
-    await parkingStore.fetchParkingHistory(props.parkingId, { interval: 'hour', period: 'week' });
+    // Récupérer les données de l'année précédente pour la même semaine
+    await parkingStore.fetchParkingHistory(props.parkingId, { 
+      interval: 'hour', 
+      period: 'week',
+      previousYear: true 
+    });
     processTimeslotData();
   } catch (err) {
     error.value = "Impossible de charger les données d'historique";
@@ -234,12 +227,12 @@ const hasData = computed(() => {
     <h2 class="text-lg font-semibold mb-3" style="color: var(--metro-blue);">Disponibilité par plage horaire</h2>
     
     <div class="text-sm text-gray-600 mb-2">
-      <p>Période analysée : du <strong>{{ historyDateRange.start }}</strong> au <strong>{{ historyDateRange.end }}</strong></p>
+      <p>Période analysée : du <strong>{{ historyDateRange.lastYearStart }}</strong> au <strong>{{ historyDateRange.lastYearEnd }}</strong> (année précédente)</p>
     </div>
     
     <p class="text-sm text-gray-600 mb-4">
-      Ce tableau présente la disponibilité moyenne des places par jour et par plage horaire, basée sur l'historique de la semaine dernière.
-      Utilisez ces informations pour planifier au mieux votre stationnement.
+      Ce tableau présente la disponibilité moyenne des places par jour et par plage horaire, basée sur l'historique de la même semaine de l'année précédente.
+      Ces données historiques permettent des prévisions plus réalistes pour planifier votre stationnement.
     </p>
     
     <!-- État de chargement -->

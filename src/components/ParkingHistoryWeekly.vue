@@ -4,6 +4,8 @@ import { Line } from 'vue-chartjs';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import type { ParkingTimeSeriesResponse } from '@/types/parking';
 import { useParkingStore } from '@/stores/parking';
+import dayjs from '@/utils/dayjs';
+import { formatDate } from '@/utils/dateUtils';
 
 // Enregistrement des composants requis par ChartJS
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
@@ -26,23 +28,21 @@ const viewOptions = ref([
 
 // Dates de la semaine (pour l'affichage)
 const historyDateRange = computed(() => {
-  const now = new Date();
-  const endDate = new Date(now);
-  const startDate = new Date(now);
-  startDate.setDate(startDate.getDate() - 7);
+  const now = dayjs();
   
-  // Formater les dates au format jour/mois/année
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric'
-    });
-  };
+  // Pour l'année précédente (même semaine)
+  const lastYear = now.subtract(1, 'year');
+  const weekNumber = now.week();
+  const lastYearSameWeek = lastYear.week(weekNumber);
+  
+  const startDate = lastYearSameWeek.startOf('week');
+  const endDate = lastYearSameWeek.endOf('week');
   
   return {
-    start: formatDate(startDate),
-    end: formatDate(endDate)
+    start: startDate.format('DD/MM/YYYY'),
+    end: endDate.format('DD/MM/YYYY'),
+    lastYearStart: startDate.format('DD/MM/YYYY'),
+    lastYearEnd: endDate.format('DD/MM/YYYY')
   };
 });
 
@@ -51,12 +51,16 @@ onMounted(async () => {
   loading.value = true;
   
   try {
-    // Initialiser les dates d'analyse
-    startDateAnalyzed.value = historyDateRange.value.start;
-    endDateAnalyzed.value = historyDateRange.value.end;
+    // Initialiser les dates d'analyse avec l'année précédente
+    startDateAnalyzed.value = historyDateRange.value.lastYearStart;
+    endDateAnalyzed.value = historyDateRange.value.lastYearEnd;
 
-    // Récupérer les données pour ce parking
-    await parkingStore.fetchParkingHistory(props.parkingId, { interval: 'hour', period: 'week' });
+    // Récupérer les données pour ce parking (année précédente)
+    await parkingStore.fetchParkingHistory(props.parkingId, { 
+      interval: 'hour', 
+      period: 'week',
+      previousYear: true 
+    });
     processHistoryData();
   } catch (err) {
     error.value = "Impossible de charger les données d'historique";
@@ -109,8 +113,19 @@ function processHistoryData() {
   const weekdayAverages = [];
   const weekendAverages = [];
   const hourLabels = [];
-
-  for (let hour = 0; hour < 24; hour++) {
+  
+  // Réorganiser les heures pour commencer à 5h du matin
+  const startHour = 5; // Commencer à 5h du matin
+  
+  // Créer un tableau d'heures commençant à 5h et allant jusqu'à 4h du matin
+  const orderedHours = [];
+  for (let i = 0; i < 24; i++) {
+    const hour = (startHour + i) % 24;
+    orderedHours.push(hour);
+  }
+  
+  // Parcourir les heures dans l'ordre souhaité
+  for (const hour of orderedHours) {
     // Formater l'heure pour l'affichage
     const formattedHour = `${hour}h`;
     hourLabels.push(formattedHour);
@@ -275,7 +290,21 @@ const chartOptions = computed(() => {
       x: {
         title: {
           display: true,
-          text: 'Jour'
+          text: 'Heure'
+        },
+        ticks: {
+          // Utiliser une fonction fléchée pour accéder aux variables du scope parent
+          callback: (value: any, index: number, values: any) => {
+            // Afficher uniquement certaines heures pour éviter l'encombrement
+            if (weekdayData.value && weekdayData.value.labels) {
+              const hourLabel = weekdayData.value.labels[index];
+              const hour = parseInt(hourLabel.replace('h', ''));
+              if (hour % 3 === 0 || hour === 5) {
+                return hourLabel;
+              }
+            }
+            return '';
+          }
         }
       }
     }
@@ -359,7 +388,7 @@ const endDateAnalyzed = ref<string | null>(null);
     
     <!-- Périodes d'analyse -->
     <div class="text-sm text-gray-600 mb-3">
-      <p>Période analysée : du <strong>{{ startDateAnalyzed }}</strong> au <strong>{{ endDateAnalyzed }}</strong></p>
+      <p>Période analysée : du <strong>{{ startDateAnalyzed }}</strong> au <strong>{{ endDateAnalyzed }}</strong> (année précédente)</p>
     </div>
     
     <!-- Explication du graphique -->
@@ -388,8 +417,8 @@ const endDateAnalyzed = ref<string | null>(null);
     
     <!-- Légende en dessous du graphique -->
     <div class="mt-4 text-xs text-gray-500">
-      <p>Les données représentent la moyenne sur une semaine. Chaque point correspond à la disponibilité moyenne à cette heure.</p>
-      <p>Pour des résultats optimaux, consultez ces tendances avant de vous déplacer.</p>
+      <p>Les données représentent la moyenne sur une semaine de l'année précédente. Chaque point correspond à la disponibilité moyenne à cette heure.</p>
+      <p>Ces données historiques permettent des prévisions plus réalistes pour planifier votre stationnement.</p>
     </div>
   </div>
 </template>

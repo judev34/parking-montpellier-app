@@ -3,6 +3,7 @@ import type { Parking } from '@/types/parking';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import dayjs from '@/utils/dayjs';
 
 const props = defineProps<{
   parking: Parking;
@@ -16,13 +17,35 @@ const totalSpots = computed(() => props.parking.totalSpotNumber?.value || 0);
 const occupancyPercentage = computed(() => props.parking.occupancyPercentage || 0);
 
 const statusColor = computed(() => {
+  // Si les données sont obsolètes, utiliser une couleur grise
+  if (isDataOutdated.value) return 'status-closed';
+  
   if (props.parking.status?.value === 'Closed') return 'status-closed';
   if (occupancyPercentage.value > 90) return 'status-full';
   if (occupancyPercentage.value > 70) return 'status-limited';
   return 'status-available';
 });
 
+// Vérifier si les données sont à jour (moins de 12h)
+const isDataOutdated = computed(() => {
+  const timestamp = props.parking.availableSpotNumber?.metadata?.timestamp?.value;
+  if (!timestamp) return true;
+  
+  const updateDate = new Date(timestamp);
+  // Soustraire 2 heures pour compenser le décalage horaire
+  updateDate.setHours(updateDate.getHours() - 2);
+  
+  const now = new Date();
+  const diffHours = (now.getTime() - updateDate.getTime()) / (1000 * 60 * 60);
+  
+  // Si la dernière mise à jour date de plus de 12 heures
+  return diffHours > 12;
+});
+
 const statusText = computed(() => {
+  // Si les données sont obsolètes, afficher un message spécifique
+  if (isDataOutdated.value) return 'Données indisponibles';
+  
   if (props.parking.status?.value === 'Closed') return 'Fermé';
   if (occupancyPercentage.value === 100) return 'Complet';
   if (occupancyPercentage.value > 90) return 'Presque complet';
@@ -40,8 +63,11 @@ const formattedDate = computed(() => {
   const timestamp = props.parking.availableSpotNumber?.metadata?.timestamp?.value;
   if (!timestamp) return 'Inconnu';
 
+  // Ajuster manuellement le décalage horaire (UTC+2 pour l'heure d'été en France)
   const date = new Date(timestamp);
-  return date.toLocaleString('fr-FR');
+  // Soustraire 2 heures pour compenser le décalage
+  date.setHours(date.getHours() - 2);
+  return dayjs(date).format('DD/MM/YYYY HH:mm');
 });
 
 // Calcul optionnel de la distance si disponible
@@ -104,7 +130,10 @@ const distance = computed(() => {
       </div>
 
       <div class="mt-3">
-        <div class="relative pt-1">
+        <div v-if="isDataOutdated" class="text-center py-2 text-red-600 text-sm">
+          Données indisponibles pour l'instant
+        </div>
+        <div v-else class="relative pt-1">
           <div class="flex mb-2 items-center justify-between">
             <div>
               <span class="text-xs font-semibold inline-block" style="color: var(--metro-blue);" itemprop="availableSpotNumber">
