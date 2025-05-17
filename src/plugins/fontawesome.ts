@@ -26,7 +26,10 @@ import {
   faChargingStation,
   faBicycle,
   faBus,
-  faDroplet
+  faDroplet,
+  faArrowsRotate,
+  faList,
+  faMapLocationDot
 } from '@fortawesome/free-solid-svg-icons';
 
 // Import des icônes brands
@@ -69,6 +72,9 @@ library.add(
   faBicycle,
   faBus,
   faDroplet,
+  faArrowsRotate,
+  faList,
+  faMapLocationDot,
   
   // Regular icons
   faClockRegular,

@@ -1,94 +1,50 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useParkingStore } from '@/stores/parking';
 import ParkingMap from '@/components/ParkingMap.vue';
 import ParkingList from '@/components/ParkingList.vue';
 import ParkingFilters from '@/components/ParkingFilters.vue';
 import ParkingSorter from '@/components/ParkingSorter.vue';
-import { useHead } from '@vueuse/head';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useSeoMetadata } from '@/composables/useSeoMetadata';
+import { useSearch } from '@/composables/useSearch';
+import { useParkingData } from '@/composables/useParkingData';
 
-// Configuration des méta-tags pour l'amélioration du SEO
-useHead({
-  title: 'Parkings Montpellier - Disponibilité en temps réel',
-  meta: [
-    {
-      name: 'description',
-      content: 'Trouvez facilement un parking disponible à Montpellier. Application affichant en temps réel les places disponibles dans les parkings de la ville.'
-    },
-    {
-      name: 'keywords',
-      content: 'parking, Montpellier, places disponibles, stationnement, temps réel, carte interactive'
-    },
-    {
-      property: 'og:title',
-      content: 'Parkings Montpellier - Disponibilité en temps réel'
-    },
-    {
-      property: 'og:description',
-      content: 'Trouvez facilement un parking disponible à Montpellier. Application affichant en temps réel les places disponibles dans les parkings de la ville.'
-    },
-    {
-      property: 'og:type',
-      content: 'website'
-    },
-    {
-      name: 'robots',
-      content: 'index, follow'
-    }
-  ]
-});
+// Configuration SEO
+const { setSeoMetadata } = useSeoMetadata();
+setSeoMetadata();
+
+// Gestion des données de parking
+const { loading, error, lastUpdated, refreshData } = useParkingData();
+
+// Gestion de la recherche
+const { searchInput, handleSearch } = useSearch();
 
 // Utiliser le store Pinia
 const parkingStore = useParkingStore();
-const { sortedParkings, loading, error, lastUpdated, filters } = storeToRefs(parkingStore);
+const { sortedParkings, filters } = storeToRefs(parkingStore);
 
 // État local
-const view = ref<'map' | 'list'>('list'); // Changer la vue par défaut à 'list'
-const searchInput = ref(filters.value.searchQuery); // Initialiser avec la valeur du store
+const view = ref<'map' | 'list'>('list');
 
-// Debounce pour la recherche
-let searchTimeout: number | null = null;
-
-const handleSearch = (event: Event) => {
-  const value = (event.target as HTMLInputElement).value;
-  
-  // Annuler le timeout précédent s'il existe
-  if (searchTimeout) {
-    clearTimeout(searchTimeout);
-  }
-  
-  // Définir un nouveau timeout (300ms de délai)
-  searchTimeout = setTimeout(() => {
-    parkingStore.setFilters({ searchQuery: value });
-  }, 300) as unknown as number;
-};
-
-// Charger les données et commencer le rafraîchissement automatique
-onMounted(() => {
-  parkingStore.fetchAllParkings();
-  parkingStore.startAutoRefresh();
+// Formater la date de dernière mise à jour
+const formattedLastUpdated = computed(() => {
+  if (!lastUpdated.value) return '';
+  return new Date(lastUpdated.value).toLocaleString('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 });
-
-// Arrêter le rafraîchissement automatique lors du démontage
-onUnmounted(() => {
-  parkingStore.stopAutoRefresh();
-});
-
-// Observer les changements de filtres pour mettre à jour le champ de recherche
-watch(() => filters.value.searchQuery, (newQuery) => {
-  searchInput.value = newQuery;
-});
-
-// Rafraîchir manuellement les données
-const refreshData = async () => {
-  await parkingStore.refreshData();
-};
 </script>
 
 <template>
   <main class="container mx-auto px-4 py-8">
     <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">Parkings de Montpellier</h1>
       <p class="text-gray-600">
         Consultez en temps réel la disponibilité des places dans les parkings de Montpellier.
       </p>
@@ -101,44 +57,36 @@ const refreshData = async () => {
     <ParkingFilters />
     
     <!-- Contrôles d'affichage -->
-    <div class="flex justify-between items-center mb-4">
-      <div class="flex space-x-2">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+      <!-- Bouton de rafraîchissement -->
+      <button 
+        @click="refreshData"
+        :disabled="loading"
+        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <FontAwesomeIcon :icon="['fas', 'arrows-rotate']" class="mr-2" :class="{ 'animate-spin': loading }" />
+        {{ loading ? 'Chargement...' : 'Rafraîchir' }}
+      </button>
+      
+      <!-- Sélecteur de vue -->
+      <div class="inline-flex rounded-md shadow-sm" role="group">
         <button 
-          @click="view = 'map'" 
-          class="px-4 py-2 rounded-lg transition-colors" 
-          :class="view === 'map' ? 'text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
-          :style="view === 'map' ? 'background-color: var(--metro-blue);' : ''"
+          @click="view = 'list'"
+          :class="{ 'bg-blue-600 text-white': view === 'list', 'bg-white text-gray-700 hover:bg-gray-50': view !== 'list' }"
+          class="px-4 py-2 text-sm font-medium rounded-l-lg border border-gray-200 focus:z-10 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          :disabled="loading"
         >
-          Carte
-        </button>
-        <button 
-          @click="view = 'list'" 
-          class="px-4 py-2 rounded-lg transition-colors" 
-          :class="view === 'list' ? 'text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
-          :style="view === 'list' ? 'background-color: var(--metro-blue);' : ''"
-        >
+          <FontAwesomeIcon :icon="['fas', 'list']" class="mr-2" />
           Liste
         </button>
-      </div>
-      
-      <div class="flex items-center">
         <button 
-          @click="refreshData" 
-          class="flex items-center text-sm hover:text-opacity-80"
+          @click="view = 'map'"
+          :class="{ 'bg-blue-600 text-white': view === 'map', 'bg-white text-gray-700 hover:bg-gray-50': view !== 'map' }"
+          class="px-4 py-2 text-sm font-medium rounded-r-lg border-t border-b border-r border-gray-200 focus:z-10 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           :disabled="loading"
-          style="color: var(--metro-blue);"
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            class="h-4 w-4 mr-1" 
-            :class="{ 'animate-spin': loading }"
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          {{ loading ? 'Actualisation...' : 'Actualiser' }}
+          <FontAwesomeIcon :icon="['fas', 'map-location-dot']" class="mr-2" />
+          Carte
         </button>
       </div>
     </div>
@@ -167,12 +115,11 @@ const refreshData = async () => {
     </div>
     
     <!-- Dernière mise à jour -->
-    
-    
-    <!-- Message d'erreur -->
-    <div v-if="error" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
-      <p>{{ error }}</p>
+    <div v-if="formattedLastUpdated" class="text-xs text-gray-500 text-right mb-2">
+      Dernière mise à jour : {{ formattedLastUpdated }}
     </div>
+    
+    <!-- Message d'erreur est déjà affiché plus haut -->
     
     <!-- Barre de recherche et tri -->
     <div class="mb-4 relative">
