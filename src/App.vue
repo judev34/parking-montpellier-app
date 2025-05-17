@@ -20,7 +20,7 @@ const tipeeDonationUrl = config.tipeeDonationUrl;
         <div class="flex items-center mb-3 md:mb-0">
           <RouterLink to="/" class="flex items-center justify-center">
             <img src="/logos/montpell2.svg" alt="Logo Parkings Montpellier" class="h-16 mr-2">
-            <span class="text-sm text-gray-600">Alpha version 1.1</span>
+            <span class="text-sm text-gray-600">version 1.2</span>
           </RouterLink>
         </div>
         <div class="flex flex-wrap justify-center">
